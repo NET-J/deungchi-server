@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/mountain")
 @RequiredArgsConstructor
 public class MountainController {
+
     private final MountainService mountainService;
 
     @GetMapping("/all")

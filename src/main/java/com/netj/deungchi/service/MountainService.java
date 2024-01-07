@@ -17,6 +17,6 @@ public class MountainService {
 
         List<Mountain> mountains = mountainRepository.findAll();
 
-        return new ResponseDto<>(200, "Success", mountains);
+        return ResponseDto.success(mountains);
     }
 }
