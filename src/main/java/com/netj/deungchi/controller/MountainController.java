@@ -17,4 +17,9 @@ public class MountainController {
     public ResponseDto<?> getAllMountains() {
         return mountainService.getAllMountains();
     }
+
+    @GetMapping
+    public String string() {
+        return "digh";
+    }
 }
