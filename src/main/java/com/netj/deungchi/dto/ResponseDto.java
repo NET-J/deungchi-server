@@ -1,8 +1,10 @@
 package com.netj.deungchi.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public class ResponseDto<T> {
     private int code;
     private String status;

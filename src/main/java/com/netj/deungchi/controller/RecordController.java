@@ -4,10 +4,7 @@ import com.netj.deungchi.dto.RecordCreateDto;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.service.RecordService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/record")
@@ -16,13 +13,18 @@ public class RecordController {
 
     private final RecordService recordService;
 
-    @GetMapping("/list")
+    @GetMapping
+    public ResponseDto<?> getRecord(@RequestParam Long id) {
+        return recordService.getRecord(id);
+    }
+
+    @GetMapping("/all")
     public ResponseDto<?> getRecordList() {
         return recordService.getRecordList();
     }
 
     @PostMapping
-    public ResponseDto<?> postRecord(RecordCreateDto recordCreateDto) {
+    public ResponseDto<?> postRecord(@RequestBody RecordCreateDto recordCreateDto) {
         return recordService.postRecord(recordCreateDto);
     }
 }
