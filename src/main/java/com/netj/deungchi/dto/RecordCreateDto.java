@@ -1,9 +1,6 @@
 package com.netj.deungchi.dto;
 
-import com.netj.deungchi.domain.Badge;
-import com.netj.deungchi.domain.Course;
-import com.netj.deungchi.domain.Member;
-import com.netj.deungchi.domain.Mountain;
+import com.netj.deungchi.domain.*;
 import lombok.Getter;
 
 import java.time.Duration;
@@ -14,6 +11,7 @@ public class RecordCreateDto {
     private Mountain mountain;
     private Course course;
     private Badge badge;
+    private Stamp stamp;
     private Integer level;
     private String content;
     private Boolean isShare;

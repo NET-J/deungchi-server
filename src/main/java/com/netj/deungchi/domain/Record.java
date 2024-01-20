@@ -31,6 +31,9 @@ public class Record {
     @ManyToOne
     Badge badge;
 
+    @ManyToOne
+    Stamp stamp;
+
     Integer level;
 
     String content;
