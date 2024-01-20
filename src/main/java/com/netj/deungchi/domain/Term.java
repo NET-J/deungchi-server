@@ -6,21 +6,22 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Builder
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Mountain {
-
+public class Term {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Column
+    private String type;
 
-    public Mountain(String name) {
-        this.name = name;
-    }
+    @Column
+    private String title;
+    @Column
+    private String description;
+
 }

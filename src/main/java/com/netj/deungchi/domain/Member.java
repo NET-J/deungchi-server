@@ -20,6 +20,9 @@ public class Member {
     String nickname;
     String phone;
     String profile_image;
+    Integer is_noti_email;
+    Integer is_noti_sms;
+    Integer is_noti_push;
 
     @Builder
     public Member(String name) {
