@@ -40,4 +40,9 @@ public class MemberController {
     public ResponseDto<?> updateImage(@RequestParam Long id, @RequestParam MultipartFile profileImage) throws IOException {
         return memberService.updateProfileImage(id, profileImage);
     }
+
+    @DeleteMapping("/leave")
+    public ResponseDto<?> leaveMember(@RequestParam Long memberId, @RequestParam String reason){
+        return memberService.leaveMember(memberId, reason);
+    }
 }

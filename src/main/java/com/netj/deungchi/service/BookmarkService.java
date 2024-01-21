@@ -23,16 +23,16 @@ public class BookmarkService {
 
     public ResponseDto<?> postBookmark(BookmarkCreateDto bookmarkCreateDto) {
         Bookmark bookmark = Bookmark.builder()
-                .member_id(bookmarkCreateDto.getMemberId())
-                .mountain_id(bookmarkCreateDto.getMountainId())
+                .member_id(Long.valueOf(bookmarkCreateDto.getMemberId()))
+                .mountain_id(Long.valueOf(bookmarkCreateDto.getMountainId()))
                 .build();
 
         bookmarkRepository.save(bookmark);
         return ResponseDto.success(bookmark);
     }
 
-    public void deleteBookmark(Long bookmarkId) {
+    public void deleteBookmark(Long memberId, Long mountainId) {
 
-        bookmarkRepository.deleteById(bookmarkId);
+        bookmarkRepository.deleteMemberBookmark(memberId, mountainId);
     }
 }

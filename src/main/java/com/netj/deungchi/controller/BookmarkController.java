@@ -26,8 +26,8 @@ public class BookmarkController {
     }
 
     @DeleteMapping()
-    public ResponseDto<?> deleteBookmark(@RequestParam Long bookmarkId) {
-        bookmarkService.deleteBookmark(bookmarkId);
+    public ResponseDto<?> deleteBookmark(@RequestParam Long memberId, @RequestParam Long mountainId) {
+        bookmarkService.deleteBookmark(memberId, mountainId);
         return ResponseDto.success(null);
     }
 }

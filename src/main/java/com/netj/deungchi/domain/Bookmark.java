@@ -22,10 +22,10 @@ public class Bookmark {
     private Long id;
 
     @Column
-    private Integer member_id;
+    private Long member_id;
 
     @Column
-    private Integer mountain_id;
+    private Long mountain_id;
 
     @CreationTimestamp
     @Column(name = "created_at")

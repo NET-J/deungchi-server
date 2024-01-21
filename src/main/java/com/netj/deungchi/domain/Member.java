@@ -3,6 +3,8 @@ package com.netj.deungchi.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
+
 @Entity
 @Builder
 @Getter
@@ -23,6 +25,9 @@ public class Member {
     Integer is_noti_email;
     Integer is_noti_sms;
     Integer is_noti_push;
+    Timestamp created_at;
+    Timestamp updated_at;
+    Timestamp deleted_at;
 
     @Builder
     public Member(String name) {
