@@ -1,16 +1,16 @@
 package com.netj.deungchi.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
 
 @Entity
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Record {
@@ -39,6 +39,10 @@ public class Record {
     String content;
 
     Boolean is_share;
+
+    Instant start_at;
+
+    Instant end_at;
 
     Duration hiking_duration;
 

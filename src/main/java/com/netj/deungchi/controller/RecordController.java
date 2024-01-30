@@ -1,6 +1,6 @@
 package com.netj.deungchi.controller;
 
-import com.netj.deungchi.dto.RecordCreateDto;
+import com.netj.deungchi.dto.RecordPostDto;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.service.RecordService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class RecordController {
     }
 
     @PostMapping
-    public ResponseDto<?> postRecord(@RequestBody RecordCreateDto recordCreateDto) {
-        return recordService.postRecord(recordCreateDto);
+    public ResponseDto<?> postRecord(@RequestBody RecordPostDto recordPostDto) {
+        return recordService.postRecord(recordPostDto);
     }
 }

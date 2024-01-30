@@ -4,9 +4,11 @@ import com.netj.deungchi.domain.*;
 import lombok.Getter;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
 
 @Getter
-public class RecordCreateDto {
+public class RecordPostDto {
     private Member member;
     private Mountain mountain;
     private Course course;
@@ -15,5 +17,6 @@ public class RecordCreateDto {
     private Integer level;
     private String content;
     private Boolean isShare;
-    private Duration hiking_duration;
+    private Instant startAt;
+    private Instant endAt;
 }
