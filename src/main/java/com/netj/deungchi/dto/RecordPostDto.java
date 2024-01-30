@@ -3,9 +3,7 @@ package com.netj.deungchi.dto;
 import com.netj.deungchi.domain.*;
 import lombok.Getter;
 
-import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
 
 @Getter
 public class RecordPostDto {
