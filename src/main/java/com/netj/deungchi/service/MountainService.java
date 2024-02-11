@@ -33,4 +33,12 @@ public class MountainService {
 
         return ResponseDto.success(result);
     }
+
+    public ResponseDto<?> getMountainsBySearch(String keyword) {
+        List<Mountain> mountains = mountainRepository.findByNameLike("%" + keyword + "%");
+
+        List<MountainListDto> result = mountains.stream().limit(10).map(MountainListDto::new).collect(Collectors.toList());
+
+        return ResponseDto.success(result);
+    }
 }
