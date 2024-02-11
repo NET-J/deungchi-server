@@ -4,11 +4,13 @@ import com.amazonaws.services.kms.model.NotFoundException;
 import com.amazonaws.util.StringUtils;
 import com.netj.deungchi.domain.Member;
 import com.netj.deungchi.domain.MemberLeave;
+import com.netj.deungchi.domain.MemberRequestKeyword;
 import com.netj.deungchi.domain.MemberSearchKeyword;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.member.MemberUpdateDto;
 import com.netj.deungchi.repository.MemberLeaveRepository;
 import com.netj.deungchi.repository.MemberRepository;
+import com.netj.deungchi.repository.MemberRequestKeywordRepository;
 import com.netj.deungchi.repository.MemberSearchKeywordRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,8 @@ public class MemberService {
     public final MemberRepository memberRepository;
     public final MemberLeaveRepository memberLeaveRepository;
     public final MemberSearchKeywordRepository memberSearchKeywordRepository;
+    public final MemberRequestKeywordRepository memberRequestKeywordRepository;
+
     @Autowired
     private final S3Uploader s3Uploader;
 
@@ -102,7 +106,7 @@ public class MemberService {
         return ResponseDto.success(null);
     }
 
-    public ResponseDto getResentKeyword(Long memberId) {
+    public ResponseDto<?> getResentKeyword(Long memberId) {
 
         Optional<Member> member = memberRepository.findById(memberId);
 
@@ -116,7 +120,7 @@ public class MemberService {
         return ResponseDto.success(result);
     }
 
-    public ResponseDto postMemberSearch(Long memberId, String keyword) {
+    public ResponseDto<?> postMemberSearchKeyword(Long memberId, String keyword) {
         Optional<Member> member = memberRepository.findById(memberId);
 
         if(member.isEmpty()) {
@@ -129,6 +133,23 @@ public class MemberService {
 
         memberSearchKeywordRepository.save(memberSearchKeyword);
 
-        return ResponseDto.success("검색어 등록");
+        return ResponseDto.success("검색 완료");
+    }
+
+    public ResponseDto<?> postMemberRequestKeyword(Long memberId, String keyword){
+        Optional<Member> member = memberRepository.findById(memberId);
+
+        if(member.isEmpty()) {
+            throw new NotFoundException(String.format("ID[%s] not found\",memberId)"));
+        }
+
+        MemberRequestKeyword memberRequestKeyword = MemberRequestKeyword.builder()
+                .request_keyword(keyword)
+                .member(member.get())
+                .build();
+
+        memberRequestKeywordRepository.save(memberRequestKeyword);
+
+        return ResponseDto.success("검색어 요청 완료");
     }
 }

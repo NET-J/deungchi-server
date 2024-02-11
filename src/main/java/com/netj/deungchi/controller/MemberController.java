@@ -42,11 +42,16 @@ public class MemberController {
 
     @PostMapping("/{memberId}/search")
     public ResponseDto<?> postMemberSearch(@PathVariable Long memberId, @RequestParam String keyword) {
-        return memberService.postMemberSearch(memberId, keyword);
+        return memberService.postMemberSearchKeyword(memberId, keyword);
     }
 
     @GetMapping("/{memberId}/resentKeyword")
     public ResponseDto<?> getResentKeyword(@PathVariable Long memberId) {
         return memberService.getResentKeyword(memberId);
+    }
+
+    @PostMapping("/{memberId}/request")
+    public ResponseDto<?> postMemberRequestKeyword(@PathVariable Long memberId, @RequestParam String keyword) {
+        return memberService.postMemberRequestKeyword(memberId, keyword);
     }
 }
