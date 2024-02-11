@@ -107,7 +107,7 @@ public class MemberService {
         Optional<Member> member = memberRepository.findById(memberId);
 
         if(member.isEmpty()) {
-            throw new NotFoundException(String.format("ID[%s] not found\",id)"));
+            throw new NotFoundException(String.format("ID[%s] not found\",memberId)"));
         }
 
         List<MemberSearchKeyword> resentKeywordList = memberSearchKeywordRepository.getMemberSearchKeywordsByMember_Id(memberId);
@@ -120,7 +120,7 @@ public class MemberService {
         Optional<Member> member = memberRepository.findById(memberId);
 
         if(member.isEmpty()) {
-            throw new NotFoundException(String.format("ID[%s] not found\",id)"));
+            throw new NotFoundException(String.format("ID[%s] not found\",memberId)"));
         }
         MemberSearchKeyword memberSearchKeyword = MemberSearchKeyword.builder()
                 .search_keyword(keyword)
