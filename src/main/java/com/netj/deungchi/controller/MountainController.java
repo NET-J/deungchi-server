@@ -14,13 +14,13 @@ public class MountainController {
 
     private final MountainService mountainService;
 
-    @GetMapping("/all")
+    @GetMapping("/list")
     public ResponseDto<?> getAllMountains() {
         return mountainService.getAllMountains();
     }
 
-    @GetMapping
-    public String string() {
-        return "digh";
+    @GetMapping("/recommendedSearchKeyword")
+    public ResponseDto<?> getRecommendedSearchKeyword() {
+        return mountainService.getRecommendedSearchKeyword();
     }
 }

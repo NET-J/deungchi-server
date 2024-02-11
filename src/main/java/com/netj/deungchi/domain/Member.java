@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Builder
@@ -28,6 +29,9 @@ public class Member {
     Timestamp created_at;
     Timestamp updated_at;
     Timestamp deleted_at;
+
+    @OneToMany(mappedBy = "member")
+    private List<MemberSearchKeyword> recentKeyword;
 
     @Builder
     public Member(String name) {
