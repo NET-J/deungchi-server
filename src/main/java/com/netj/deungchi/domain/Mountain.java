@@ -4,11 +4,20 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Where(clause = "deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE mountain SET deleted_at = CURRENT_TIMESTAMP where id = ?")
 public class Mountain {
 
     @Id
@@ -23,4 +32,13 @@ public class Mountain {
     private String average_time;
     private String altitude;
     private String featured_image;
+
+    @CreationTimestamp
+    Timestamp createdAt;
+
+    @UpdateTimestamp
+    Timestamp updatedAt;
+
+    @OneToMany(mappedBy = "mountain")
+    private List<Course> courseList;
 }

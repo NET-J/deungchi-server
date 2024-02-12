@@ -1,4 +1,4 @@
-package com.netj.deungchi.dto;
+package com.netj.deungchi.dto.record;
 
 import com.netj.deungchi.domain.Badge;
 import com.netj.deungchi.domain.Course;

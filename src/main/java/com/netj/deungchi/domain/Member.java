@@ -31,7 +31,10 @@ public class Member {
     Timestamp deleted_at;
 
     @OneToMany(mappedBy = "member")
-    private List<MemberSearchKeyword> recentKeyword;
+    private List<MemberSearchKeyword> recentKeywordList;
+
+    @OneToMany(mappedBy = "member")
+    private List<Record> recordList;
 
     @Builder
     public Member(String name) {

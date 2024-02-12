@@ -1,7 +1,7 @@
 package com.netj.deungchi.service;
 
 import com.netj.deungchi.domain.Record;
-import com.netj.deungchi.dto.RecordCreateDto;
+import com.netj.deungchi.dto.record.RecordCreateDto;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.repository.RecordRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +43,6 @@ public class RecordService {
                 .member(recordCreateDto.getMember())
                 .mountain(recordCreateDto.getMountain())
                 .course(recordCreateDto.getCourse())
-                .badge(recordCreateDto.getBadge())
                 .level(recordCreateDto.getLevel())
                 .content(recordCreateDto.getContent())
                 .is_share(recordCreateDto.getIsShare())

@@ -111,6 +111,7 @@ public class MemberService {
         Optional<Member> member = memberRepository.findById(memberId);
 
         if(member.isEmpty()) {
+            log.info(String.format("ID[%s] not found\",memberId)"));
             throw new NotFoundException(String.format("ID[%s] not found\",memberId)"));
         }
 
@@ -124,6 +125,7 @@ public class MemberService {
         Optional<Member> member = memberRepository.findById(memberId);
 
         if(member.isEmpty()) {
+            log.info(String.format("ID[%s] not found\",memberId)"));
             throw new NotFoundException(String.format("ID[%s] not found\",memberId)"));
         }
         MemberSearchKeyword memberSearchKeyword = MemberSearchKeyword.builder()
@@ -140,6 +142,7 @@ public class MemberService {
         Optional<Member> member = memberRepository.findById(memberId);
 
         if(member.isEmpty()) {
+            log.info(String.format("ID[%s] not found\",memberId)"));
             throw new NotFoundException(String.format("ID[%s] not found\",memberId)"));
         }
 

@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.sql.Timestamp;
 
 @Entity
 @NoArgsConstructor
@@ -21,6 +24,9 @@ public class MemberRequestKeyword {
 
     @Column(nullable = false)
     private String request_keyword;
+
+    @CreationTimestamp
+    Timestamp createdAt;
 
     @Builder
     private MemberRequestKeyword(Member member, String request_keyword){

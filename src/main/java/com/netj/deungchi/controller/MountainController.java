@@ -26,4 +26,9 @@ public class MountainController {
     public ResponseDto<?> getMountainsBySearch(@RequestParam String keyword){
         return mountainService.getMountainsBySearch(keyword);
     }
+
+    @GetMapping("/{mountainId}")
+    public ResponseDto<?> getMountainDetail(@PathVariable Long mountainId) {
+        return mountainService.getMountainDetail(mountainId);
+    }
 }

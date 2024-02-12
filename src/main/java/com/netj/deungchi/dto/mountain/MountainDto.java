@@ -2,11 +2,14 @@ package com.netj.deungchi.dto.mountain;
 
 import com.netj.deungchi.domain.Mountain;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class MountainListDto {
+public class MountainDto {
     private String name;
     private String featuredImage;
     private String location;
@@ -15,7 +18,8 @@ public class MountainListDto {
     private String altitude;
 //    private Boolean isBookmark;
 
-    public MountainListDto(Mountain mountain){
+    @Builder
+    public MountainDto(Mountain mountain){
         this.name = mountain.getName();
         this.featuredImage = mountain.getFeatured_image();
         this.location = mountain.getLocation();

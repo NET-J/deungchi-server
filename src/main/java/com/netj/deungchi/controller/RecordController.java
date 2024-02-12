@@ -1,6 +1,6 @@
 package com.netj.deungchi.controller;
 
-import com.netj.deungchi.dto.RecordCreateDto;
+import com.netj.deungchi.dto.record.RecordCreateDto;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.service.RecordService;
 import lombok.RequiredArgsConstructor;
