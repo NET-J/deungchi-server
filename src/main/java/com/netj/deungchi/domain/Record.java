@@ -2,20 +2,17 @@ package com.netj.deungchi.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 
 import java.sql.Timestamp;
-import java.time.Duration;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Where(clause = "deleted_at IS NULL")
@@ -41,11 +38,23 @@ public class Record {
 
     String content;
 
-    Boolean is_share;
+    Timestamp startAt;
 
-    Duration hiking_duration;
+    Timestamp endAt;
+
+    String startLocation;
+
+    String end_location;
+
+    // 등산 시간
+    String hikingDuration;
+
+    // 등산 거리
+    String hikingLength;
 
     Integer temperature;
+
+    Boolean isShare;
 
     @CreationTimestamp
     Timestamp createdAt;
@@ -54,14 +63,19 @@ public class Record {
     Timestamp updatedAt;
 
     @Builder
-    public Record(Member member, Mountain mountain, Course course, Integer level, String content, Boolean is_share, Duration hiking_duration, Integer temperature) {
+    public Record(Member member, Mountain mountain, Course course, Integer level, String content, Timestamp startAt, Timestamp endAt, String startLocation, String end_location, String hikingDuration, String hikingLength, Integer temperature, Boolean isShare) {
         this.member = member;
         this.mountain = mountain;
         this.course = course;
         this.level = level;
         this.content = content;
-        this.is_share = is_share;
-        this.hiking_duration = hiking_duration;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.startLocation = startLocation;
+        this.end_location = end_location;
+        this.hikingDuration = hikingDuration;
+        this.hikingLength = hikingLength;
         this.temperature = temperature;
+        this.isShare = isShare;
     }
 }
