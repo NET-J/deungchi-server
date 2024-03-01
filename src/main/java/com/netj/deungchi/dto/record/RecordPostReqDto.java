@@ -1,9 +1,7 @@
 package com.netj.deungchi.dto.record;
 
-import com.netj.deungchi.domain.Course;
-import com.netj.deungchi.domain.Member;
+import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
-import com.netj.deungchi.domain.Mountain;
 import lombok.Getter;
 
 @Getter
