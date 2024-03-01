@@ -11,7 +11,7 @@ public class RecordPostReqDto {
     private Long mountainId;
     private Long courseId;
     private String endLocation;
-    private Integer level;
+    private String level;
     private String content;
     private Boolean isShare;
     private String hikingDuration;

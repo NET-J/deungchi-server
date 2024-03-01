@@ -1,12 +1,10 @@
 package com.netj.deungchi.dto.record;
 
-import lombok.Data;
 import lombok.Builder;
 
 import java.sql.Timestamp;
 import com.netj.deungchi.domain.Record;
 
-@Data
 @Builder
 public class RecordPostResDto {
     private String mountainName;

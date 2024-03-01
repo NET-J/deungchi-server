@@ -12,7 +12,7 @@ import java.util.Date;
 public class RecordPublicDto {
     private Long memberId;
     private String content;
-    private Integer level;
+    private String level;
     private Date createdAt;
 
     @Builder

@@ -31,7 +31,7 @@ public class Record {
     @ManyToOne
     Course course;
 
-    Integer level;
+    String level;
 
     String content;
 
@@ -61,7 +61,7 @@ public class Record {
     Timestamp updatedAt;
 
     @Builder
-    public Record(Member member, Mountain mountain, Course course, Integer level, String content, Timestamp startAt, Timestamp endAt, String startLocation, String endLocation, String hikingDuration, Float hikingLength, Integer temperature, Boolean isShare) {
+    public Record(Member member, Mountain mountain, Course course, String level, String content, Timestamp startAt, Timestamp endAt, String startLocation, String endLocation, String hikingDuration, Float hikingLength, Integer temperature, Boolean isShare) {
         this.member = member;
         this.mountain = mountain;
         this.course = course;
