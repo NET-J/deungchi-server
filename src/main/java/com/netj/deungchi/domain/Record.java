@@ -1,6 +1,5 @@
 package com.netj.deungchi.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,11 +25,9 @@ public class Record {
     @ManyToOne
     Member member;
 
-    @JsonIgnore
     @ManyToOne
     Mountain mountain;
 
-    @JsonIgnore
     @ManyToOne
     Course course;
 
@@ -44,13 +41,14 @@ public class Record {
 
     String startLocation;
 
-    String end_location;
+    // 목적지
+    String endLocation;
 
     // 등산 시간
     String hikingDuration;
 
     // 등산 거리
-    String hikingLength;
+    Float hikingLength;
 
     Integer temperature;
 
@@ -63,7 +61,7 @@ public class Record {
     Timestamp updatedAt;
 
     @Builder
-    public Record(Member member, Mountain mountain, Course course, Integer level, String content, Timestamp startAt, Timestamp endAt, String startLocation, String end_location, String hikingDuration, String hikingLength, Integer temperature, Boolean isShare) {
+    public Record(Member member, Mountain mountain, Course course, Integer level, String content, Timestamp startAt, Timestamp endAt, String startLocation, String endLocation, String hikingDuration, Float hikingLength, Integer temperature, Boolean isShare) {
         this.member = member;
         this.mountain = mountain;
         this.course = course;
@@ -72,7 +70,7 @@ public class Record {
         this.startAt = startAt;
         this.endAt = endAt;
         this.startLocation = startLocation;
-        this.end_location = end_location;
+        this.endLocation = endLocation;
         this.hikingDuration = hikingDuration;
         this.hikingLength = hikingLength;
         this.temperature = temperature;

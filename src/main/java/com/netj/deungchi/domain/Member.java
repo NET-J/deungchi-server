@@ -1,5 +1,6 @@
 package com.netj.deungchi.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,9 +31,11 @@ public class Member {
     Timestamp updated_at;
     Timestamp deleted_at;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<MemberSearchKeyword> recentKeywordList;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Record> recordList;
 

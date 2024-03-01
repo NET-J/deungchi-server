@@ -1,5 +1,6 @@
 package com.netj.deungchi.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,6 +40,7 @@ public class Mountain {
     @UpdateTimestamp
     Timestamp updatedAt;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "mountain")
     private List<Course> courseList;
 }

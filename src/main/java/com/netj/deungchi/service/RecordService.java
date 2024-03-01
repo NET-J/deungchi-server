@@ -1,9 +1,15 @@
 package com.netj.deungchi.service;
 
+import com.netj.deungchi.domain.Course;
+import com.netj.deungchi.domain.Member;
+import com.netj.deungchi.domain.Mountain;
 import com.netj.deungchi.domain.Record;
-import com.netj.deungchi.dto.record.RecordCreateDto;
+import com.netj.deungchi.dto.record.RecordPostReqDto;
 import com.netj.deungchi.dto.ResponseDto;
-import com.netj.deungchi.dto.record.RecordEndLocationDto;
+import com.netj.deungchi.dto.record.RecordPostResDto;
+import com.netj.deungchi.repository.CourseRepository;
+import com.netj.deungchi.repository.MemberRepository;
+import com.netj.deungchi.repository.MountainRepository;
 import com.netj.deungchi.repository.RecordRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +25,9 @@ import java.util.Optional;
 public class RecordService {
 
     public final RecordRepository recordRepository;
+    private final MemberRepository memberRepository;
+    private final MountainRepository mountainRepository;
+    private final CourseRepository courseRepository;
     private final EntityManager entityManager;
 
     public ResponseDto<?> getRecord(Long id) {
@@ -40,41 +49,17 @@ public class RecordService {
         return ResponseDto.success(records);
     }
 
-    public ResponseDto<?> postRecord(RecordCreateDto recordCreateDto) {
-
-        Record record = Record.builder()
-                .member(recordCreateDto.getMember())
-                .mountain(recordCreateDto.getMountain())
-                .course(recordCreateDto.getCourse())
-                .level(recordCreateDto.getLevel())
-                .content(recordCreateDto.getContent())
-                .isShare(recordCreateDto.getIsShare())
-                .hikingDuration(recordCreateDto.getHikingDuration())
-                .build();
-
-        recordRepository.save(record);
-
-        return ResponseDto.success(record);
-    }
-
-    public ResponseDto<?> postRecordEndLocation(Long recordId, RecordEndLocationDto recordEndLocationDto) {
-        if(recordId != null) {
-            Record record = entityManager.find(Record.class, recordId);
-            record.setEnd_location(recordEndLocationDto.getEndLocation());
-
-            return ResponseDto.success(record);
-        } else {
-            Record record = Record.builder()
-                    .member(recordEndLocationDto.getMember())
-                    .mountain(recordEndLocationDto.getMountain())
-                    .course(recordEndLocationDto.getCourse())
-                    .end_location(recordEndLocationDto.getEndLocation())
-                    .build();
+    public ResponseDto<?> postRecord(RecordPostReqDto recordPostReqDto, Long memberId) {
+        Optional<Member> member = memberRepository.findById(memberId);
+        Optional<Mountain> mountain = mountainRepository.findById(recordPostReqDto.getMountainId());        Optional<Course> course = courseRepository.findById(recordPostReqDto.getCourseId());
+        if(member.isPresent()) {
+            Record record = recordPostReqDto.toRecordEntity(member.get(), mountain.get(), course.get());
             recordRepository.save(record);
-
-            return ResponseDto.success(record);
+            return ResponseDto.success(RecordPostResDto.of(record));
+        } else {
+            log.info("유저가 존재하지 않습니다.");
+            return ResponseDto.fail(404, "Member not found", "유저가 존재하지 않습니다.");
         }
     }
-
 
 }

@@ -58,7 +58,7 @@ public class MountainService {
 
         if(mountain.isEmpty()) {
             log.info("산이 존재하지 않습니다.");
-            return ResponseDto.fail(404, "Record not found", "산이 존재하지 않습니다.");
+            return ResponseDto.fail(404, "Mountain not found", "산이 존재하지 않습니다.");
         }
 
         MountainDto mountainDto = MountainDto.builder().mountain(mountain.get()).build();
