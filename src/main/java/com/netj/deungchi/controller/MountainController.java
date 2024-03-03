@@ -1,6 +1,7 @@
 package com.netj.deungchi.controller;
 
 import com.netj.deungchi.dto.ResponseDto;
+import com.netj.deungchi.dto.mountain.MountainMapGetReqDto;
 import com.netj.deungchi.service.MountainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +14,13 @@ public class MountainController {
     private final MountainService mountainService;
 
     @GetMapping("/list")
-    public ResponseDto<?> getAllMountains() {
-        return mountainService.getAllMountains();
+    public ResponseDto<?> getMountainList() {
+        return mountainService.getMountainList();
+    }
+
+    @GetMapping("/map")
+    public ResponseDto<?> getMountainMap(@RequestBody MountainMapGetReqDto mountainMapGetReqDto) {
+        return mountainService.getMountainMap(mountainMapGetReqDto);
     }
 
     @GetMapping("/recommendedSearchKeyword")
