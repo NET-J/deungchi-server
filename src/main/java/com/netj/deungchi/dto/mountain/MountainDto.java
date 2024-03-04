@@ -16,6 +16,8 @@ public class MountainDto {
     private String level;
     private String averageTime;
     private String altitude;
+    private Float latitude;
+    private Float longitude;
 //    private Boolean isBookmark;
 
     @Builder
@@ -26,5 +28,7 @@ public class MountainDto {
         this.level = mountain.getLevel();
         this.averageTime = mountain.getAverage_time();
         this.altitude = mountain.getAltitude();
+        this.latitude = mountain.getLatitude();
+        this.longitude = mountain.getLongitude();
     }
 }

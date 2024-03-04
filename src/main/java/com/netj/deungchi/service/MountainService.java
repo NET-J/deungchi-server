@@ -4,7 +4,6 @@ import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.mountain.MountainDto;
-import com.netj.deungchi.dto.mountain.MountainMapGetReqDto;
 import com.netj.deungchi.dto.record.RecordPublicDto;
 import com.netj.deungchi.repository.CourseRepository;
 import com.netj.deungchi.repository.MountainRepository;
@@ -33,15 +32,7 @@ public class MountainService {
     public ResponseDto<?> getMountainList() {
 
         List<Mountain> mountains = mountainRepository.findAll();
-        List<MountainDto> result = mountains.stream().limit(10).map(MountainDto::new).collect(Collectors.toList());
-
-        return ResponseDto.success(result);
-    }
-
-    public ResponseDto<?> getMountainMap(MountainMapGetReqDto mountainMapGetReqDto) {
-
-        List<Mountain> mountains = mountainRepository.findAll();
-        List<MountainDto> result = mountains.stream().limit(10).map(MountainDto::new).collect(Collectors.toList());
+        List<MountainDto> result = mountains.stream().map(MountainDto::new).collect(Collectors.toList());
 
         return ResponseDto.success(result);
     }
