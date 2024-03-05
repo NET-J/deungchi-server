@@ -1,14 +1,24 @@
 package com.netj.deungchi.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
-@Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Where(clause = "deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE mountain SET deleted_at = CURRENT_TIMESTAMP where id = ?")
 public class Mountain {
 
     @Id
@@ -18,7 +28,21 @@ public class Mountain {
     @Column(nullable = false)
     private String name;
 
-    public Mountain(String name) {
-        this.name = name;
-    }
+    private String location;
+    private String level;
+    private String average_time;
+    private String altitude;
+    private Float latitude;
+    private Float longitude;
+    private String featured_image;
+
+    @CreationTimestamp
+    Timestamp createdAt;
+
+    @UpdateTimestamp
+    Timestamp updatedAt;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "mountain")
+    private List<Course> courseList;
 }

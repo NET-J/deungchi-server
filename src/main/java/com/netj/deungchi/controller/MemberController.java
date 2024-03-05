@@ -1,19 +1,13 @@
 package com.netj.deungchi.controller;
 
-import com.netj.deungchi.domain.Member;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.member.MemberUpdateDto;
-import com.netj.deungchi.repository.MemberRepository;
 import com.netj.deungchi.service.MemberService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/member")
@@ -39,5 +33,25 @@ public class MemberController {
     @PostMapping("/profile")
     public ResponseDto<?> updateImage(@RequestParam Long id, @RequestParam MultipartFile profileImage) throws IOException {
         return memberService.updateProfileImage(id, profileImage);
+    }
+
+    @DeleteMapping("/leave")
+    public ResponseDto<?> leaveMember(@RequestParam Long memberId, @RequestParam String reason){
+        return memberService.leaveMember(memberId, reason);
+    }
+
+    @PostMapping("/{memberId}/search")
+    public ResponseDto<?> postMemberSearch(@PathVariable Long memberId, @RequestParam String keyword) {
+        return memberService.postMemberSearchKeyword(memberId, keyword);
+    }
+
+    @GetMapping("/{memberId}/resentKeyword")
+    public ResponseDto<?> getResentKeyword(@PathVariable Long memberId) {
+        return memberService.getResentKeyword(memberId);
+    }
+
+    @PostMapping("/{memberId}/request")
+    public ResponseDto<?> postMemberRequestKeyword(@PathVariable Long memberId, @RequestParam String keyword) {
+        return memberService.postMemberRequestKeyword(memberId, keyword);
     }
 }

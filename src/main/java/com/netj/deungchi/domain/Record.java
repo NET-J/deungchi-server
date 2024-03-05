@@ -2,16 +2,22 @@ package com.netj.deungchi.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
-import java.time.Duration;
-import java.time.Instant;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Where(clause = "deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE record SET deleted_at = CURRENT_TIMESTAMP where id = ?")
 public class Record {
 
     @Id
@@ -27,33 +33,52 @@ public class Record {
     @ManyToOne
     Course course;
 
-    @ManyToOne
-    Badge badge;
-
-    @ManyToOne
-    Stamp stamp;
-
-    Integer level;
+    String level;
 
     String content;
 
-    Boolean is_share;
+    Timestamp startAt;
 
-    Instant start_at;
+    Timestamp endAt;
 
-    Instant end_at;
+    String startLocation;
 
-    Duration hiking_duration;
+    // 목적지
+    String endLocation;
+
+    // 등산 시간
+    String hikingDuration;
+
+    // 등산 거리
+    Float hikingLength;
+
+    Integer temperature;
+
+    Boolean isShare;
+
+    @Transient
+    private final List<Image> imageList = new ArrayList<>();
+
+    @CreationTimestamp
+    Timestamp createdAt;
+
+    @UpdateTimestamp
+    Timestamp updatedAt;
 
     @Builder
-    public Record(Member member, Mountain mountain, Course course, Badge badge, Integer level, String content, Boolean is_share, Duration hiking_duration) {
+    public Record(Member member, Mountain mountain, Course course, String level, String content, Timestamp startAt, Timestamp endAt, String startLocation, String endLocation, String hikingDuration, Float hikingLength, Integer temperature, Boolean isShare) {
         this.member = member;
         this.mountain = mountain;
         this.course = course;
-        this.badge = badge;
         this.level = level;
         this.content = content;
-        this.is_share = is_share;
-        this.hiking_duration = hiking_duration;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
+        this.hikingDuration = hikingDuration;
+        this.hikingLength = hikingLength;
+        this.temperature = temperature;
+        this.isShare = isShare;
     }
 }

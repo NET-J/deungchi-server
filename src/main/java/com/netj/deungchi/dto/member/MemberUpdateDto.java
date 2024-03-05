@@ -11,4 +11,8 @@ public class MemberUpdateDto {
     private String name;
     private String nickname;
     private String phone;
+    private Integer isNotiEmail;
+    private Integer isNotiSms;
+    private Integer isNotiPush;
+
 }

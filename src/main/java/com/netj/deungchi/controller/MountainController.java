@@ -3,9 +3,7 @@ package com.netj.deungchi.controller;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.service.MountainService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/mountain")
@@ -14,13 +12,23 @@ public class MountainController {
 
     private final MountainService mountainService;
 
-    @GetMapping("/all")
-    public ResponseDto<?> getAllMountains() {
-        return mountainService.getAllMountains();
+    @GetMapping("/list")
+    public ResponseDto<?> getMountainList() {
+        return mountainService.getMountainList();
     }
 
-    @GetMapping
-    public String string() {
-        return "digh";
+    @GetMapping("/recommendedSearchKeyword")
+    public ResponseDto<?> getRecommendedSearchKeyword() {
+        return mountainService.getRecommendedSearchKeyword();
+    }
+
+    @GetMapping("/search")
+    public ResponseDto<?> getMountainsBySearch(@RequestParam String keyword){
+        return mountainService.getMountainsBySearch(keyword);
+    }
+
+    @GetMapping("/{mountainId}")
+    public ResponseDto<?> getMountainDetail(@PathVariable Long mountainId) {
+        return mountainService.getMountainDetail(mountainId);
     }
 }
