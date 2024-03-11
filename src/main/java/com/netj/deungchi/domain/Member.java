@@ -27,6 +27,8 @@ public class Member {
     Integer is_noti_email;
     Integer is_noti_sms;
     Integer is_noti_push;
+    String provider;
+    String provider_id;
     Timestamp created_at;
     Timestamp updated_at;
     Timestamp deleted_at;
