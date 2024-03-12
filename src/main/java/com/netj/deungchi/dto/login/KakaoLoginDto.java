@@ -9,5 +9,5 @@ public class KakaoLoginDto {
     private String id;
     private String nickname;
     private String email;
-    private String profile_image;
+    private String profileImage;
 }

@@ -25,7 +25,7 @@ public class AuthController {
     @PostMapping("/login/kakao")
     public ResponseDto<?> loginKakao(@RequestBody KakaoLoginDto kakaoLoginDto)
     {
-        return authService.login("kakao", kakaoLoginDto);
+        return authService.loginKakao(kakaoLoginDto);
     }
 
 //    @GetMapping("/kakao")

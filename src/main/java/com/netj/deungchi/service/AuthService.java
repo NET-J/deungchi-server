@@ -24,16 +24,16 @@ public class AuthService {
     public final MemberRepository memberRepository;
 
 
-    public ResponseDto<?> login(String provider, KakaoLoginDto kakaoLoginDto) {
+    public ResponseDto<?> loginKakao(KakaoLoginDto kakaoLoginDto) {
         Date now = new Date();
 
-        Optional<Member> member = Optional.ofNullable(memberRepository.findByProviderId(provider, kakaoLoginDto.getId()));
+        Optional<Member> member = Optional.ofNullable(memberRepository.findByProviderId("kakao", kakaoLoginDto.getId()));
 
         if (member.isEmpty()) {
             member = Optional.ofNullable(Member.builder()
                     .email(kakaoLoginDto.getEmail())
-                    .profile_image(kakaoLoginDto.getProfile_image())
-                    .provider(provider)
+                    .profile_image(kakaoLoginDto.getProfileImage())
+                    .provider("kakao")
                     .provider_id(kakaoLoginDto.getId())
                     .build());
         }
