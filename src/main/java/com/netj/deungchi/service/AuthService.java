@@ -27,7 +27,11 @@ public class AuthService {
     public ResponseDto<?> kakaoLogin(KakaoLoginDto kakaoLoginDto) {
         Date now = new Date();
 
+        if (kakaoLoginDto.getId().isEmpty()) {
+            return ResponseDto.fail(400, "error", "param error");
+        }
         Optional<Member> member = Optional.ofNullable(memberRepository.findByProviderId("kakao", kakaoLoginDto.getId()));
+
 
         if (member.isEmpty()) {
             member = Optional.ofNullable(Member.builder()
