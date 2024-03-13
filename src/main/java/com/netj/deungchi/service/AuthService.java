@@ -26,23 +26,24 @@ public class AuthService {
 
     public ResponseDto<?> kakaoLogin(KakaoLoginDto kakaoLoginDto) {
         Date now = new Date();
-
+        System.out.println(kakaoLoginDto.getId());
         if (kakaoLoginDto.getId().isEmpty()) {
             return ResponseDto.fail(400, "error", "param error");
         }
         Optional<Member> member = Optional.ofNullable(memberRepository.findByProviderId("kakao", kakaoLoginDto.getId()));
 
-
         if (member.isEmpty()) {
-            member = Optional.ofNullable(Member.builder()
+            Member newMember = Member.builder()
                     .provider("kakao")
                     .provider_id(kakaoLoginDto.getId())
                     .email(kakaoLoginDto.getEmail())
                     .nickname(kakaoLoginDto.getNickname())
                     .profile_image(kakaoLoginDto.getProfileImage())
-                    .build());
-        }
+                    .build();
+            memberRepository.save(newMember);
 
+            member = Optional.of(newMember);
+        }
         String token = Jwts.builder().setHeaderParam(Header.TYPE, Header.JWT_TYPE) // (1)
                 .setIssuer("fresh") // (2)
                 .setIssuedAt(now) // (3)
@@ -50,7 +51,6 @@ public class AuthService {
                 .claim("id", member.get().getId()) // (5)
                 .signWith(SignatureAlgorithm.HS256, "deungchi-jwt-secret") // (6)
                 .compact();
-
         return ResponseDto.success(token);
     }
 }
