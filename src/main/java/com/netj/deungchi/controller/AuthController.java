@@ -2,6 +2,7 @@ package com.netj.deungchi.controller;
 
 
 import com.netj.deungchi.dto.ResponseDto;
+import com.netj.deungchi.dto.auth.KakaoLoginDto;
 import com.netj.deungchi.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -10,21 +11,19 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/oauth2")
+@RequestMapping("/auth")
 public class AuthController {
 
     public final AuthService authService;
 
-    @GetMapping("/kakao")
-    public ResponseDto<?> loginKakao(@RequestParam("code") String code) {
+    @PostMapping("/login/kakao")
+    public ResponseDto<?> loginKakao(@RequestParam KakaoLoginDto kakaoLoginDto) {
+        return authService.kakaoLogin(kakaoLoginDto);
 //        System.out.println("code = " + code);
 //
 //        // 1. header 생성
@@ -55,6 +54,6 @@ public class AuthController {
 //
 //        System.out.println("response = " + response);
 
-        return authService.login("kakao", "123");
+//        return authService.login("kakao", "123");
     }
 }
