@@ -1,7 +1,9 @@
 package com.netj.deungchi.controller;
 
 import com.netj.deungchi.dto.ResponseDto;
+import com.netj.deungchi.provider.jwt.JwtProvider;
 import com.netj.deungchi.service.MountainService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class MountainController {
 
     private final MountainService mountainService;
+    private final JwtProvider jwtProvider;
 
     @GetMapping("/list")
-    public ResponseDto<?> getMountainList() {
+    public ResponseDto<?> getMountainList(HttpServletRequest request) throws Exception {
+        Long userSeq = jwtProvider.getUserSeqFromRequest(request);
         return mountainService.getMountainList();
     }
 
