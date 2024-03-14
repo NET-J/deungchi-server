@@ -27,11 +27,11 @@ public class JwtProvider {
     public String getAccessToken(Long id){
         Date now = new Date();
         return Jwts.builder().setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .claim("userSeq", id)
+                .claim("id", id)
                 .setIssuer("beTravelic")
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRED_TIME))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
 
@@ -41,25 +41,21 @@ public class JwtProvider {
                 .setIssuer("beTravelic")
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + REFREST_TOKEN_EXPIRED_TIME))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
 
-    public String getIdFromAccessToken(String accessToken) throws Exception{
-        String id = (String) Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().get("id");
-        return  id;
-    }
+//    public String getIdFromAccessToken(String accessToken) throws Exception{
+//        String id = (String) Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().get("id");
+//        return  id;
+//    }
 
-    public Long getUserSeqFromAccessToken(String accessToken) throws Exception{
-        System.out.println(Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().get("id"));
-        System.out.println(accessToken);
-        Long userSeq = Long.parseLong(
+    public Long getIdFromAccessToken(String accessToken) throws Exception{
+        Long id = Long.parseLong(
                 String.valueOf(Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().get("id"))
         );
-        System.out.println("bb");
-        System.out.println(userSeq);
 
-        return  userSeq;
+        return  id;
     }
 
     public boolean isValidToken(String token){
@@ -70,12 +66,10 @@ public class JwtProvider {
             return false;
         }
     }
-    public Long getUserSeqFromRequest(HttpServletRequest request) throws Exception {
+    public Long getIdFromRequest(HttpServletRequest request) throws Exception {
         final String requestTokenHeader = request.getHeader("Authorization");
         String accessToken = requestTokenHeader.substring("Bearer ".length());
-        System.out.println("aaa");
-        System.out.println(accessToken);
-        return getUserSeqFromAccessToken(accessToken);
+        return getIdFromAccessToken(accessToken);
     }
 
 }

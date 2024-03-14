@@ -17,7 +17,7 @@ public class MountainController {
 
     @GetMapping("/list")
     public ResponseDto<?> getMountainList(HttpServletRequest request) throws Exception {
-        Long userSeq = jwtProvider.getUserSeqFromRequest(request);
+        Long id = jwtProvider.getIdFromRequest(request);
         return mountainService.getMountainList();
     }
 
