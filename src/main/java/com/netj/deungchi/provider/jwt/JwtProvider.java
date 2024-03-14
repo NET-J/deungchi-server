@@ -51,6 +51,7 @@ public class JwtProvider {
     }
 
     public Long getUserSeqFromAccessToken(String accessToken) throws Exception{
+        System.out.println(Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().get("id"));
         System.out.println(accessToken);
         Long userSeq = Long.parseLong(
                 String.valueOf(Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().get("id"))
@@ -70,7 +71,8 @@ public class JwtProvider {
         }
     }
     public Long getUserSeqFromRequest(HttpServletRequest request) throws Exception {
-        String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String requestTokenHeader = request.getHeader("Authorization");
+        String accessToken = requestTokenHeader.substring("Bearer ".length());
         System.out.println("aaa");
         System.out.println(accessToken);
         return getUserSeqFromAccessToken(accessToken);
