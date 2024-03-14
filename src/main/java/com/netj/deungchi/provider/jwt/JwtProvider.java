@@ -9,17 +9,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
+
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 
 @Component
 public class JwtProvider {
-    private final Key key;
+    private final String key;
     public JwtProvider(@Value("${jwt.secret}") String secretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.key = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
     private final Long ACCESS_TOKEN_EXPIRED_TIME = 1000L * 60 * 60 * 60 * 60 * 60;
     private final Long REFREST_TOKEN_EXPIRED_TIME = 1000L * 60 * 60 * 24 * 14;
@@ -31,7 +33,7 @@ public class JwtProvider {
                 .setIssuer("beTravelic")
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRED_TIME))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
 
@@ -41,7 +43,7 @@ public class JwtProvider {
                 .setIssuer("beTravelic")
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + REFREST_TOKEN_EXPIRED_TIME))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
 
