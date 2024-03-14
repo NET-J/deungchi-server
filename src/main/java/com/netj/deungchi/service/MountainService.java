@@ -4,7 +4,7 @@ import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.mountain.MountainDto;
-import com.netj.deungchi.dto.record.RecordPublicDto;
+import com.netj.deungchi.dto.record.RecordSimpleResDto;
 import com.netj.deungchi.repository.CourseRepository;
 import com.netj.deungchi.repository.MountainRepository;
 import com.netj.deungchi.repository.RecommendedSearchKeywordRepository;
@@ -65,13 +65,13 @@ public class MountainService {
 
         List<Record> recordList = RecordRepository.findAll();
 
-        List<RecordPublicDto> recordPublicDtoList = recordList.stream().limit(3).map(RecordPublicDto::new).toList();
+        List<RecordSimpleResDto> recordListResDtoList = recordList.stream().limit(3).map(RecordSimpleResDto::new).toList();
 
         List<Course> courseList = CourseRepository.findAllByMountain(mountain.get());
 
         Map<String, Object> result = new HashMap<>();
         result.put("mountain", mountainDto);
-//        result.put("reviewList", recordList);
+        result.put("reviewList", recordListResDtoList);
         result.put("courseList", courseList);
 
         return ResponseDto.success(result);
