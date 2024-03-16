@@ -23,6 +23,7 @@ public class MountainDto {
 
     @Builder
     public MountainDto(Mountain mountain){
+        this.id = mountain.getId();
         this.name = mountain.getName();
         this.featuredImage = mountain.getFeatured_image();
         this.location = mountain.getLocation();
