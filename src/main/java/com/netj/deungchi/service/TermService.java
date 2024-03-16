@@ -1,9 +1,11 @@
 package com.netj.deungchi.service;
 
 import com.netj.deungchi.domain.Bookmark;
+import com.netj.deungchi.domain.Member;
 import com.netj.deungchi.domain.MemberTerm;
 import com.netj.deungchi.domain.Term;
 import com.netj.deungchi.dto.ResponseDto;
+import com.netj.deungchi.repository.MemberRepository;
 import com.netj.deungchi.repository.MemberTermRepository;
 import com.netj.deungchi.repository.TermRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import java.util.List;
 public class TermService {
     public final TermRepository termRepository;
     public final MemberTermRepository memberTermRepository;
+    public final MemberRepository memberRepository;
 
     public ResponseDto<?> getTerm(String termType) {
         return ResponseDto.success(termRepository.findByTermType(termType));
@@ -35,6 +38,14 @@ public class TermService {
                     .build();
 
             memberTermRepository.save(memberTerm);
+        }
+
+        if (isMarketing) {
+            Member member = memberRepository.findById(memberId).get();
+
+            member.setIs_noti_push(1);
+            member.setIs_noti_email(1);
+            member.setIs_noti_email(1);
         }
 
         return ResponseDto.success(true);
