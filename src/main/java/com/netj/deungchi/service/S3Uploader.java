@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.netj.deungchi.dto.image.ImagePostDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,8 +77,8 @@ public class S3Uploader {
         return Optional.empty();
     }
 
-    public List<String> getimgUrlList(List<MultipartFile> multipartFile) {
-        List<String> imgUrlList = new ArrayList<>();
+    public List<ImagePostDto> getimagePostDtoList(List<MultipartFile> multipartFile) {
+        List<ImagePostDto> imagePostDtoList = new ArrayList<>();
 
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
         for (MultipartFile file : multipartFile) {
@@ -85,16 +86,24 @@ public class S3Uploader {
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
             objectMetadata.setContentType(file.getContentType());
+            String url = null;
 
             try(InputStream inputStream = file.getInputStream()) {
                 amazonS3.putObject(new PutObjectRequest(bucket+"/post/image", fileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-                imgUrlList.add(amazonS3.getUrl(bucket+"/post/image", fileName).toString());
+                url = amazonS3.getUrl(bucket + "/post/image", fileName).toString();
             } catch(IOException e) {
                 throw new IllegalStateException("파일 처리 중 오류가 발생했습니다.");
             }
+            ImagePostDto imagePostDto = ImagePostDto.builder().
+                    name(fileName)
+                    .size(file.getSize())
+                    .url(url).build();
+
+            imagePostDtoList.add(imagePostDto);
+
         }
-        return imgUrlList;
+        return imagePostDtoList;
     }
 
     // 이미지 파일명 중복 방지

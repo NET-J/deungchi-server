@@ -5,12 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Slf4j
 public class RecordSimpleResDto {
     private Long memberId;
     private String content;
@@ -19,6 +20,7 @@ public class RecordSimpleResDto {
 
     @Builder
     public RecordSimpleResDto(Record record){
+        log.info(String.valueOf(record.getId()));
         this.memberId = record.getMember().getId();
         this.content = record.getContent();
         this.level = record.getLevel();

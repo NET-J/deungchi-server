@@ -2,6 +2,7 @@ package com.netj.deungchi.service;
 
 import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
+import com.netj.deungchi.dto.image.ImagePostDto;
 import com.netj.deungchi.dto.record.RecordPostReqDto;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.record.RecordPostResDto;
@@ -44,37 +45,30 @@ public class RecordService {
         return ResponseDto.success(records);
     }
 
-    public ResponseDto<?> postRecord(RecordPostReqDto recordPostReqDto, Long memberId, List<String> imgPaths) {
+    public ResponseDto<?> postRecord(RecordPostReqDto recordPostReqDto, Long memberId, List<ImagePostDto> imagePostDtoList) {
         Optional<Member> member = memberRepository.findById(memberId);
         Optional<Mountain> mountain = mountainRepository.findById(recordPostReqDto.getMountainId());        Optional<Course> course = courseRepository.findById(recordPostReqDto.getCourseId());
-
-        recordImgBlankCheck(imgPaths);
 
         if(member.isPresent()) {
             Record record = recordPostReqDto.toRecordEntity(member.get(), mountain.get(), course.get());
             recordRepository.save(record);
 
-            List<String> imgList = new ArrayList<>();
-            for (String imgUrl : imgPaths) {
+            for (ImagePostDto imagePostDto : imagePostDtoList) {
                 Image img = Image.builder()
-                        .imageUrl(imgUrl)
-                        .record(record)
+                        .url(imagePostDto.getUrl())
+                        .name(imagePostDto.getName())
+                        .size(imagePostDto.getSize())
+                        .tableName(record.getClass().getSimpleName())
+                        .tableId(record.getId())
                         .build();
 
                 imageRepository.save(img);
-                imgList.add(img.getImageUrl());
             }
 
             return ResponseDto.success(RecordPostResDto.of(record));
         } else {
             log.info("유저가 존재하지 않습니다.");
             return ResponseDto.fail(404, "Member not found", "유저가 존재하지 않습니다.");
-        }
-    }
-
-    private void recordImgBlankCheck(List<String> imgPaths) {
-        if(imgPaths == null || imgPaths.isEmpty()){
-            throw new IllegalArgumentException("이미지 경로가 없습니다. 적어도 하나 이상의 이미지가 필요합니다.");
         }
     }
 

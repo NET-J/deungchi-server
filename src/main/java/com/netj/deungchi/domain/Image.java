@@ -19,15 +19,25 @@ public class Image {
     private Long id;
 
     @Column(nullable = false)
-    private String imageUrl;
+    private String tableName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Record record;
+    @Column(nullable = false)
+    private Long tableId;
+
+    @Column(nullable = false)
+    private String name;  // 파일 원본명
+
+    private Long size;
+
+    @Column(nullable = false)
+    private String url;
 
     @Builder
-    public Image(String imageUrl, Record record){
-        this.imageUrl = imageUrl;
-        this.record = record;
+    public Image(String name, Long size, String url, String tableName, Long tableId){
+        this.name = name;
+        this.size = size;
+        this.url = url;
+        this.tableName = tableName;
+        this.tableId = tableId;
     }
 }
