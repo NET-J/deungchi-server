@@ -1,10 +1,12 @@
 package com.netj.deungchi.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
-import com.netj.deungchi.dto.mountain.MountainDto;
-import com.netj.deungchi.dto.record.RecordSimpleResDto;
+import com.netj.deungchi.dto.course.CourseListResDto;
+import com.netj.deungchi.dto.mountain.MountainListResDto;
+import com.netj.deungchi.dto.record.RecordListResDto;
 import com.netj.deungchi.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,15 +24,19 @@ import java.util.stream.Collectors;
 public class MountainService {
 
     public final MountainRepository mountainRepository;
+    public final MemberRepository memberRepository;
+    public final MemberSearchKeywordRepository memberSearchKeywordRepository;
+    public final BookmarkRepository bookmarkRepository;
     public final RecommendedSearchKeywordRepository RecommendedSearchKeywordRepository;
-    public final RecordRepository RecordRepository;
+    public final RecordRepository recordRepository;
     public final CourseRepository CourseRepository;
     public final ImageRepository imageRepository;
 
-    public ResponseDto<?> getMountainList() {
+    public ResponseDto<?> getMountainList(Long memberId) {
 
         List<Mountain> mountains = mountainRepository.findAll();
-        List<MountainDto> result = mountains.stream().map(MountainDto::new).collect(Collectors.toList());
+
+        List< MountainListResDto > result = mountains.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
 
         return ResponseDto.success(result);
     }
@@ -43,15 +49,41 @@ public class MountainService {
         return ResponseDto.success(result);
     }
 
-    public ResponseDto<?> getMountainsBySearch(String keyword) {
-        List<Mountain> mountains = mountainRepository.findByNameLike("%" + keyword + "%");
+    public ResponseDto<?> getMountainsBySearch(Long memberId, String keyword) {
 
-        List<MountainDto> result = mountains.stream().limit(10).map(MountainDto::new).collect(Collectors.toList());
+        this.postMountainSearchKeyword(memberId, keyword);
+
+        List<Mountain> mountainsFindByName = mountainRepository.findByNameLike("%" + keyword + "%");
+
+        List< MountainListResDto > resultByName = mountainsFindByName.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
+
+        List<Mountain> mountainsFindByLocation = mountainRepository.findByLocationLike("%" + keyword + "%");
+
+        List< MountainListResDto > resultByLocation = mountainsFindByLocation.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("name", resultByName);
+        result.put("location", resultByLocation);
 
         return ResponseDto.success(result);
     }
 
-    public ResponseDto<?> getMountainDetail(Long mountainId) {
+    public void postMountainSearchKeyword(Long memberId, String keyword) {
+        Optional<Member> member = memberRepository.findById(memberId);
+
+        if(member.isEmpty()) {
+            log.info(String.format("ID[%s] not found\",memberId)"));
+            throw new NotFoundException(String.format("ID[%s] not found\",memberId)"));
+        }
+        MemberSearchKeyword memberSearchKeyword = MemberSearchKeyword.builder()
+                .search_keyword(keyword)
+                .member(member.get())
+                .build();
+
+        memberSearchKeywordRepository.save(memberSearchKeyword);
+    }
+
+    public ResponseDto<?> getMountainDetail(Long memberId, Long mountainId) {
         Optional<Mountain> mountain = mountainRepository.findById(mountainId);
 
         if(mountain.isEmpty()) {
@@ -59,23 +91,39 @@ public class MountainService {
             return ResponseDto.fail(404, "Mountain not found", "산이 존재하지 않습니다.");
         }
 
-        MountainDto mountainDto = MountainDto.builder().mountain(mountain.get()).build();
+        MountainListResDto mountainListResDto = MountainListResDto.builder().mountain(mountain.get()).bookmarkRepository(bookmarkRepository).memberId(memberId).build();
 
-        List<Record> recordList = RecordRepository.findAll();
+        List<Record> recordList = recordRepository.findRecordsByMountainId(mountainId);
 
-        List<RecordSimpleResDto> recordListResDtoList = recordList.stream()
+        List<RecordListResDto> recordListResDtoList = recordList.stream()
                 .limit(3)
-                .map(record -> new RecordSimpleResDto(record, imageRepository))
+                .map(record -> new RecordListResDto(record, imageRepository))
                 .toList();
 
 
         List<Course> courseList = CourseRepository.findAllByMountain(mountain.get());
 
+        List<CourseListResDto> courseListResDtoList = courseList.stream()
+                .limit(3)
+                .map(course -> new CourseListResDto(course, imageRepository))
+                .toList();
+
         Map<String, Object> result = new HashMap<>();
-        result.put("mountain", mountainDto);
-        result.put("reviewList", recordListResDtoList);
-        result.put("courseList", courseList);
+        result.put("mountain", mountainListResDto);
+        result.put("recordList", recordListResDtoList);
+        result.put("courseList", courseListResDtoList);
 
         return ResponseDto.success(result);
+    }
+
+    public ResponseDto<?> getRecordList(Long mountainId) {
+        List<Record> recordList = recordRepository.findRecordsByMountainId(mountainId);
+
+        List<RecordListResDto> recordListResDtoList = recordList.stream()
+                .map(record -> new RecordListResDto(record, imageRepository))
+                .toList();
+
+        return ResponseDto.success(recordListResDtoList);
+
     }
 }

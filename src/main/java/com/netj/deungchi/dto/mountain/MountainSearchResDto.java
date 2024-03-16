@@ -1,6 +1,7 @@
 package com.netj.deungchi.dto.mountain;
 
 import com.netj.deungchi.domain.Mountain;
+import com.netj.deungchi.repository.BookmarkRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class MountainDto {
+public class MountainSearchResDto {
     private Long id;
     private String name;
     private String featuredImage;
@@ -19,10 +20,10 @@ public class MountainDto {
     private String altitude;
     private Float latitude;
     private Float longitude;
-//    private Boolean isBookmark;
+    private Boolean isBookmark;
 
     @Builder
-    public MountainDto(Mountain mountain){
+    public MountainSearchResDto(Mountain mountain, BookmarkRepository bookmarkRepository, Long memberId){
         this.id = mountain.getId();
         this.name = mountain.getName();
         this.featuredImage = mountain.getFeatured_image();
@@ -32,5 +33,6 @@ public class MountainDto {
         this.altitude = mountain.getAltitude();
         this.latitude = mountain.getLatitude();
         this.longitude = mountain.getLongitude();
+        this.isBookmark = bookmarkRepository.findByMemberIdAndMountainId(memberId, this.id).isPresent();
     }
 }
