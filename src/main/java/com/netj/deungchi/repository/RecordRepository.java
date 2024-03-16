@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface RecordRepository extends JpaRepository<Record, Long> {
-    @Query(value = "select * " +
-            "from record " +
-            "WHERE member_id = ?1 order by desc limit 3", nativeQuery = true)
+    @Query(value = "select r.*, m.name as mountain_name, m.featured_image as mountain_featured_image " +
+            "from record as r " +
+            "inner join mountain m on r.mountain_id = m.id " +
+            "WHERE r.member_id = ?1", nativeQuery = true)
     List<Record> getMemberRecord(Long memberId);
 
 }

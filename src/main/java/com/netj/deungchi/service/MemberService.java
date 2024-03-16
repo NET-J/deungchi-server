@@ -52,12 +52,9 @@ public class MemberService {
         return ResponseDto.success(members);
     }
 
-    public ResponseDto<?> updateMember(MemberUpdateDto memberUpdateDto) {
-        Member member = memberRepository.findById(Long.valueOf(memberUpdateDto.getId())).orElseThrow(IllegalArgumentException::new);
+    public ResponseDto<?> updateMember(Long memberId, MemberUpdateDto memberUpdateDto) {
+        Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
 
-        if(!StringUtils.isNullOrEmpty(memberUpdateDto.getEmail())) {
-            member.setEmail(memberUpdateDto.getEmail());
-        }
         if(!StringUtils.isNullOrEmpty(memberUpdateDto.getName())) {
             member.setName(memberUpdateDto.getName());
         }
@@ -166,7 +163,7 @@ public class MemberService {
 
         Map<String, Object> result = new HashMap<>();
         result.put("member", member);
-        result.put("recordCount", records.stream().count());
+        result.put("recordCount", records.size());
         result.put("records", records);
 
 //        result.put("badgeCount", badgeCount);

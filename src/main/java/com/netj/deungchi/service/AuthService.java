@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -48,7 +50,11 @@ public class AuthService {
         }
 
         String accessToken = jwtProvider.getAccessToken(member.get().getId());
-//
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("accessToken", accessToken);
+        result.put("member", member);
+
 //        String token = Jwts.builder().setHeaderParam(Header.TYPE, Header.JWT_TYPE) // (1)
 //                .setIssuer("fresh") // (2)
 //                .setIssuedAt(now) // (3)
@@ -56,6 +62,6 @@ public class AuthService {
 //                .claim("id", member.get().getId()) // (5)
 //                .signWith(SignatureAlgorithm.HS256, "deungchi-jwt-secret") // (6)
 //                .compact();
-        return ResponseDto.success(accessToken);
+        return ResponseDto.success(result);
     }
 }

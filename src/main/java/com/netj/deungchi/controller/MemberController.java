@@ -29,8 +29,10 @@ public class MemberController {
     }
 
     @PutMapping
-    public ResponseDto<?> update(@RequestBody MemberUpdateDto memberUpdateDto) {
-        return memberService.updateMember(memberUpdateDto);
+    public ResponseDto<?> update(HttpServletRequest request, @RequestBody MemberUpdateDto memberUpdateDto) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+
+        return memberService.updateMember(memberId, memberUpdateDto);
     }
     @PostMapping("/profile")
     public ResponseDto<?> updateImage(@RequestParam Long id, @RequestParam MultipartFile profileImage) throws IOException {
