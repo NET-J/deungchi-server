@@ -35,7 +35,7 @@ public class RecordController {
     }
 
     @PostMapping
-    public ResponseDto<?> postRecord(HttpServletRequest request, @RequestPart RecordPostReqDto recordPostReqDto, @RequestPart List<MultipartFile> imageList) throws Exception {
+    public ResponseDto<?> postRecord(HttpServletRequest request, @RequestPart RecordPostReqDto recordPostReqDto, @RequestPart (required = false) List<MultipartFile> imageList) throws Exception {
         Long memberId = jwtProvider.getIdFromRequest(request);
 
         List<ImagePostDto> imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);

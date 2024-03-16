@@ -2,12 +2,14 @@ package com.netj.deungchi.dto.image;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class ImagePostDto {
-    private final String name;
-    private final Long size;
-    private final String url;
+    private  String name;
+    private  Long size;
+    private  String url;
 
     @Builder
     public ImagePostDto (String name, Long size, String url) {

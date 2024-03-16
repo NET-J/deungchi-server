@@ -3,11 +3,10 @@ package com.netj.deungchi.dto.record;
 import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class RecordPostReqDto {
     private Long mountainId;
     private Long courseId;
@@ -17,7 +16,6 @@ public class RecordPostReqDto {
     private Boolean isShare;
     private String hikingDuration;
     private Float hikingLength;
-    private List<MultipartFile> files;
 
     public Record toRecordEntity(Member member, Mountain mountain, Course course) {
         return Record.builder()
