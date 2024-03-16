@@ -22,7 +22,7 @@ public class AuthController {
     public final AuthService authService;
 
     @PostMapping("/login/kakao")
-    public ResponseDto<?> loginKakao(@RequestParam KakaoLoginDto kakaoLoginDto) {
+    public ResponseDto<?> loginKakao(@RequestBody KakaoLoginDto kakaoLoginDto) {
         return authService.kakaoLogin(kakaoLoginDto);
 //        System.out.println("code = " + code);
 //

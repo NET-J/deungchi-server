@@ -3,6 +3,7 @@ package com.netj.deungchi.service;
 import com.netj.deungchi.domain.Member;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.auth.KakaoLoginDto;
+import com.netj.deungchi.provider.jwt.JwtProvider;
 import com.netj.deungchi.repository.MemberRepository;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -22,31 +23,39 @@ import java.util.Optional;
 @Transactional
 public class AuthService {
     public final MemberRepository memberRepository;
+    private final JwtProvider jwtProvider;
 
 
     public ResponseDto<?> kakaoLogin(KakaoLoginDto kakaoLoginDto) {
         Date now = new Date();
-
+        System.out.println(kakaoLoginDto.getId());
+        if (kakaoLoginDto.getId().isEmpty()) {
+            return ResponseDto.fail(400, "error", "param error");
+        }
         Optional<Member> member = Optional.ofNullable(memberRepository.findByProviderId("kakao", kakaoLoginDto.getId()));
 
         if (member.isEmpty()) {
-            member = Optional.ofNullable(Member.builder()
+            Member newMember = Member.builder()
                     .provider("kakao")
                     .provider_id(kakaoLoginDto.getId())
                     .email(kakaoLoginDto.getEmail())
                     .nickname(kakaoLoginDto.getNickname())
                     .profile_image(kakaoLoginDto.getProfileImage())
-                    .build());
+                    .build();
+            memberRepository.save(newMember);
+
+            member = Optional.of(newMember);
         }
 
-        String token = Jwts.builder().setHeaderParam(Header.TYPE, Header.JWT_TYPE) // (1)
-                .setIssuer("fresh") // (2)
-                .setIssuedAt(now) // (3)
-                .setExpiration(new Date(now.getTime() + Duration.ofMinutes(30).toMillis())) // (4)
-                .claim("id", member.get().getId()) // (5)
-                .signWith(SignatureAlgorithm.HS256, "deungchi-jwt-secret") // (6)
-                .compact();
-
-        return ResponseDto.success(token);
+        String accessToken = jwtProvider.getAccessToken(member.get().getId());
+//
+//        String token = Jwts.builder().setHeaderParam(Header.TYPE, Header.JWT_TYPE) // (1)
+//                .setIssuer("fresh") // (2)
+//                .setIssuedAt(now) // (3)
+//                .setExpiration(new Date(now.getTime() + Duration.ofMinutes(30).toMillis())) // (4)
+//                .claim("id", member.get().getId()) // (5)
+//                .signWith(SignatureAlgorithm.HS256, "deungchi-jwt-secret") // (6)
+//                .compact();
+        return ResponseDto.success(accessToken);
     }
 }

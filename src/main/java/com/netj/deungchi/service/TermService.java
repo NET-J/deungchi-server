@@ -1,6 +1,5 @@
 package com.netj.deungchi.service;
 
-import com.netj.deungchi.domain.Bookmark;
 import com.netj.deungchi.domain.Term;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.repository.TermRepository;
