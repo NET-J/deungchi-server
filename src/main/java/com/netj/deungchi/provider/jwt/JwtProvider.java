@@ -21,8 +21,8 @@ public class JwtProvider {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
-    private final Long ACCESS_TOKEN_EXPIRED_TIME = 1000L * 60 * 60 * 60 * 60 * 60;
-    private final Long REFREST_TOKEN_EXPIRED_TIME = 1000L * 60 * 60 * 24 * 14;
+    private final Long ACCESS_TOKEN_EXPIRED_TIME = 1000L * 60 * 60 * 60 * 60 * 60 * 10000;
+    private final Long REFREST_TOKEN_EXPIRED_TIME = 1000L * 60 * 60 * 24 * 14 * 10000;
 
     public String getAccessToken(Long id){
         Date now = new Date();

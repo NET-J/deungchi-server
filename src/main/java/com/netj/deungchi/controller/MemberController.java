@@ -15,7 +15,7 @@ import java.io.IOException;
 @RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
-
+    private final JwtProvider jwtProvider;
     private final MemberService memberService;
     private final JwtProvider jwtProvider;
 
@@ -30,8 +30,10 @@ public class MemberController {
     }
 
     @PutMapping
-    public ResponseDto<?> update(@RequestBody MemberUpdateDto memberUpdateDto) {
-        return memberService.updateMember(memberUpdateDto);
+    public ResponseDto<?> update(HttpServletRequest request, @RequestBody MemberUpdateDto memberUpdateDto) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+
+        return memberService.updateMember(memberId, memberUpdateDto);
     }
     @PostMapping("/profile")
     public ResponseDto<?> updateImage(@RequestParam Long id, @RequestParam MultipartFile profileImage) throws IOException {
@@ -53,5 +55,11 @@ public class MemberController {
     public ResponseDto<?> postMemberRequestKeyword(HttpServletRequest request, @RequestParam String keyword) throws Exception{
         Long memberId = jwtProvider.getIdFromRequest(request);
         return memberService.postMemberRequestKeyword(memberId, keyword);
+    }
+
+    @GetMapping("/mypage")
+    public ResponseDto<?> getMypage(HttpServletRequest request) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return memberService.getMypage(memberId);
     }
 }
