@@ -53,7 +53,7 @@ public class MountainService {
         return ResponseDto.success(result);
     }
 
-    public ResponseDto<?> getMountainDetail(Long mountainId) {
+    public ResponseDto<?> getMountainDetail(Long memberId, Long mountainId) {
         Optional<Mountain> mountain = mountainRepository.findById(mountainId);
 
         if(mountain.isEmpty()) {
@@ -61,7 +61,7 @@ public class MountainService {
             return ResponseDto.fail(404, "Mountain not found", "산이 존재하지 않습니다.");
         }
 
-        MountainListResDto mountainDto = MountainListResDto.builder().mountain(mountain.get()).build();
+        MountainListResDto mountainListResDto = MountainListResDto.builder().mountain(mountain.get()).bookmarkRepository(bookmarkRepository).memberId(memberId).build();
 
         List<Record> recordList = RecordRepository.findAll();
 
@@ -74,8 +74,8 @@ public class MountainService {
         List<Course> courseList = CourseRepository.findAllByMountain(mountain.get());
 
         Map<String, Object> result = new HashMap<>();
-        result.put("mountain", mountainDto);
-        result.put("reviewList", recordListResDtoList);
+        result.put("mountain", mountainListResDto);
+        result.put("recordList", recordListResDtoList);
         result.put("courseList", courseList);
 
         return ResponseDto.success(result);

@@ -33,7 +33,8 @@ public class MountainController {
     }
 
     @GetMapping("/{mountainId}")
-    public ResponseDto<?> getMountainDetail(@PathVariable Long mountainId) {
-        return mountainService.getMountainDetail(mountainId);
+    public ResponseDto<?> getMountainDetail(HttpServletRequest request,@PathVariable Long mountainId) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return mountainService.getMountainDetail(memberId, mountainId);
     }
 }
