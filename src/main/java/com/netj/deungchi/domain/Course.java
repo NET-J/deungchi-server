@@ -32,7 +32,7 @@ public class Course {
     private String averageTime;
     private String distance;
     private String path;
-    private String transportionInfo;
+    private String transportationInfo;
     private String parkingInfo;
 
     @CreationTimestamp

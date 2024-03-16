@@ -3,6 +3,7 @@ package com.netj.deungchi.service;
 import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
+import com.netj.deungchi.dto.course.CourseListResDto;
 import com.netj.deungchi.dto.mountain.MountainListResDto;
 import com.netj.deungchi.dto.record.RecordSimpleResDto;
 import com.netj.deungchi.repository.*;
@@ -73,10 +74,15 @@ public class MountainService {
 
         List<Course> courseList = CourseRepository.findAllByMountain(mountain.get());
 
+        List<CourseListResDto> courseListResDtoList = courseList.stream()
+                .limit(3)
+                .map(course -> new CourseListResDto(course, imageRepository))
+                .toList();
+
         Map<String, Object> result = new HashMap<>();
         result.put("mountain", mountainListResDto);
         result.put("recordList", recordListResDtoList);
-        result.put("courseList", courseList);
+        result.put("courseList", courseListResDtoList);
 
         return ResponseDto.success(result);
     }

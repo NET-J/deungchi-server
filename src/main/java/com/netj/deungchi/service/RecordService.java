@@ -55,7 +55,8 @@ public class RecordService {
 
     public ResponseDto<?> postRecord(RecordPostReqDto recordPostReqDto, Long memberId, List<ImagePostDto> imagePostDtoList) {
         Optional<Member> member = memberRepository.findById(memberId);
-        Optional<Mountain> mountain = mountainRepository.findById(recordPostReqDto.getMountainId());        Optional<Course> course = courseRepository.findById(recordPostReqDto.getCourseId());
+        Optional<Mountain> mountain = mountainRepository.findById(recordPostReqDto.getMountainId());
+        Optional<Course> course = courseRepository.findById(recordPostReqDto.getCourseId());
 
         if(member.isPresent()) {
             Record record = recordPostReqDto.toRecordEntity(member.get(), mountain.get(), course.get());
