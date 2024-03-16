@@ -2,7 +2,9 @@ package com.netj.deungchi.controller;
 
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.member.MemberUpdateDto;
+import com.netj.deungchi.provider.jwt.JwtProvider;
 import com.netj.deungchi.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +17,7 @@ import java.io.IOException;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtProvider jwtProvider;
 
     @GetMapping
     public ResponseDto<?> getMember(@RequestParam Long id) {
@@ -40,18 +43,15 @@ public class MemberController {
         return memberService.leaveMember(memberId, reason);
     }
 
-    @PostMapping("/{memberId}/search")
-    public ResponseDto<?> postMemberSearch(@PathVariable Long memberId, @RequestParam String keyword) {
-        return memberService.postMemberSearchKeyword(memberId, keyword);
-    }
-
-    @GetMapping("/{memberId}/resentKeyword")
-    public ResponseDto<?> getResentKeyword(@PathVariable Long memberId) {
+    @GetMapping("/resentKeyword")
+    public ResponseDto<?> getResentKeyword(HttpServletRequest request) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
         return memberService.getResentKeyword(memberId);
     }
 
-    @PostMapping("/{memberId}/request")
-    public ResponseDto<?> postMemberRequestKeyword(@PathVariable Long memberId, @RequestParam String keyword) {
+    @PostMapping("/request")
+    public ResponseDto<?> postMemberRequestKeyword(HttpServletRequest request, @RequestParam String keyword) throws Exception{
+        Long memberId = jwtProvider.getIdFromRequest(request);
         return memberService.postMemberRequestKeyword(memberId, keyword);
     }
 }

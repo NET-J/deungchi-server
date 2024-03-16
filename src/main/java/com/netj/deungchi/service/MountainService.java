@@ -1,5 +1,6 @@
 package com.netj.deungchi.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
 public class MountainService {
 
     public final MountainRepository mountainRepository;
+    public final MemberRepository memberRepository;
+    public final MemberSearchKeywordRepository memberSearchKeywordRepository;
     public final BookmarkRepository bookmarkRepository;
     public final RecommendedSearchKeywordRepository RecommendedSearchKeywordRepository;
     public final RecordRepository RecordRepository;
@@ -47,11 +50,37 @@ public class MountainService {
     }
 
     public ResponseDto<?> getMountainsBySearch(Long memberId, String keyword) {
-        List<Mountain> mountains = mountainRepository.findByNameLike("%" + keyword + "%");
 
-        List< MountainListResDto > result = mountains.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
+        this.postMountainSearchKeyword(memberId, keyword);
+
+        List<Mountain> mountainsFindByName = mountainRepository.findByNameLike("%" + keyword + "%");
+
+        List< MountainListResDto > resultByName = mountainsFindByName.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
+
+        List<Mountain> mountainsFindByLocation = mountainRepository.findByLocationLike("%" + keyword + "%");
+
+        List< MountainListResDto > resultByLocation = mountainsFindByLocation.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("name", resultByName);
+        result.put("location", resultByLocation);
 
         return ResponseDto.success(result);
+    }
+
+    public void postMountainSearchKeyword(Long memberId, String keyword) {
+        Optional<Member> member = memberRepository.findById(memberId);
+
+        if(member.isEmpty()) {
+            log.info(String.format("ID[%s] not found\",memberId)"));
+            throw new NotFoundException(String.format("ID[%s] not found\",memberId)"));
+        }
+        MemberSearchKeyword memberSearchKeyword = MemberSearchKeyword.builder()
+                .search_keyword(keyword)
+                .member(member.get())
+                .build();
+
+        memberSearchKeywordRepository.save(memberSearchKeyword);
     }
 
     public ResponseDto<?> getMountainDetail(Long memberId, Long mountainId) {

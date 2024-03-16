@@ -21,6 +21,12 @@ public class MountainController {
         return mountainService.getMountainList(memberId);
     }
 
+    @GetMapping("/{mountainId}")
+    public ResponseDto<?> getMountainDetail(HttpServletRequest request,@PathVariable Long mountainId) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return mountainService.getMountainDetail(memberId, mountainId);
+    }
+
     @GetMapping("/recommendedSearchKeyword")
     public ResponseDto<?> getRecommendedSearchKeyword() {
         return mountainService.getRecommendedSearchKeyword();
@@ -32,9 +38,5 @@ public class MountainController {
         return mountainService.getMountainsBySearch(memberId, keyword);
     }
 
-    @GetMapping("/{mountainId}")
-    public ResponseDto<?> getMountainDetail(HttpServletRequest request,@PathVariable Long mountainId) throws Exception {
-        Long memberId = jwtProvider.getIdFromRequest(request);
-        return mountainService.getMountainDetail(memberId, mountainId);
-    }
+
 }

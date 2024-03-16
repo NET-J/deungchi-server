@@ -121,23 +121,6 @@ public class MemberService {
         return ResponseDto.success(result);
     }
 
-    public ResponseDto<?> postMemberSearchKeyword(Long memberId, String keyword) {
-        Optional<Member> member = memberRepository.findById(memberId);
-
-        if(member.isEmpty()) {
-            log.info(String.format("ID[%s] not found\",memberId)"));
-            throw new NotFoundException(String.format("ID[%s] not found\",memberId)"));
-        }
-        MemberSearchKeyword memberSearchKeyword = MemberSearchKeyword.builder()
-                .search_keyword(keyword)
-                .member(member.get())
-                .build();
-
-        memberSearchKeywordRepository.save(memberSearchKeyword);
-
-        return ResponseDto.success("검색 완료");
-    }
-
     public ResponseDto<?> postMemberRequestKeyword(Long memberId, String keyword){
         Optional<Member> member = memberRepository.findById(memberId);
 
