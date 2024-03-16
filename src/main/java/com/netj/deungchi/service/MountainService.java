@@ -5,10 +5,7 @@ import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.mountain.MountainDto;
 import com.netj.deungchi.dto.record.RecordSimpleResDto;
-import com.netj.deungchi.repository.CourseRepository;
-import com.netj.deungchi.repository.MountainRepository;
-import com.netj.deungchi.repository.RecommendedSearchKeywordRepository;
-import com.netj.deungchi.repository.RecordRepository;
+import com.netj.deungchi.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +25,7 @@ public class MountainService {
     public final RecommendedSearchKeywordRepository RecommendedSearchKeywordRepository;
     public final RecordRepository RecordRepository;
     public final CourseRepository CourseRepository;
+    public final ImageRepository imageRepository;
 
     public ResponseDto<?> getMountainList() {
 
@@ -65,7 +63,11 @@ public class MountainService {
 
         List<Record> recordList = RecordRepository.findAll();
 
-        List<RecordSimpleResDto> recordListResDtoList = recordList.stream().limit(3).map(RecordSimpleResDto::new).toList();
+        List<RecordSimpleResDto> recordListResDtoList = recordList.stream()
+                .limit(3)
+                .map(record -> new RecordSimpleResDto(record, imageRepository))
+                .toList();
+
 
         List<Course> courseList = CourseRepository.findAllByMountain(mountain.get());
 
