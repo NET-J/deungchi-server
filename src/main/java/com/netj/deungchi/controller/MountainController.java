@@ -17,8 +17,8 @@ public class MountainController {
 
     @GetMapping("/list")
     public ResponseDto<?> getMountainList(HttpServletRequest request) throws Exception {
-        Long id = jwtProvider.getIdFromRequest(request);
-        return mountainService.getMountainList();
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return mountainService.getMountainList(memberId);
     }
 
     @GetMapping("/recommendedSearchKeyword")
@@ -27,8 +27,9 @@ public class MountainController {
     }
 
     @GetMapping("/search")
-    public ResponseDto<?> getMountainsBySearch(@RequestParam String keyword){
-        return mountainService.getMountainsBySearch(keyword);
+    public ResponseDto<?> getMountainsBySearch(HttpServletRequest request, @RequestParam String keyword) throws Exception{
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return mountainService.getMountainsBySearch(memberId, keyword);
     }
 
     @GetMapping("/{mountainId}")

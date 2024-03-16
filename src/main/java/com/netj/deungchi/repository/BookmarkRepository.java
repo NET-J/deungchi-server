@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
     @Query(value = "select b.mountain_id, m.* " +
@@ -25,4 +26,8 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
     @Modifying
     @Query(value = "delete from bookmark where member_id = :memberId and mountain_id = :mountainId", nativeQuery = true)
     void deleteMemberBookmark(@Param("memberId") Long memberId, @Param("mountainId") Long mountainId);
+
+    @Query(value = "SELECT * FROM bookmark WHERE member_id = :memberId AND mountain_id = :mountainId", nativeQuery = true)
+    Optional<Bookmark> findByMemberIdAndMountainId(@Param("memberId") Long memberId, @Param("mountainId") Long mountainId);
+
 }

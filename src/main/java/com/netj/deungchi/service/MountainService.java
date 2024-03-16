@@ -3,7 +3,7 @@ package com.netj.deungchi.service;
 import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
-import com.netj.deungchi.dto.mountain.MountainDto;
+import com.netj.deungchi.dto.mountain.MountainListResDto;
 import com.netj.deungchi.dto.record.RecordSimpleResDto;
 import com.netj.deungchi.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +22,17 @@ import java.util.stream.Collectors;
 public class MountainService {
 
     public final MountainRepository mountainRepository;
+    public final BookmarkRepository bookmarkRepository;
     public final RecommendedSearchKeywordRepository RecommendedSearchKeywordRepository;
     public final RecordRepository RecordRepository;
     public final CourseRepository CourseRepository;
     public final ImageRepository imageRepository;
 
-    public ResponseDto<?> getMountainList() {
+    public ResponseDto<?> getMountainList(Long memberId) {
 
         List<Mountain> mountains = mountainRepository.findAll();
-        List<MountainDto> result = mountains.stream().map(MountainDto::new).collect(Collectors.toList());
+
+        List< MountainListResDto > result = mountains.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
 
         return ResponseDto.success(result);
     }
@@ -43,10 +45,10 @@ public class MountainService {
         return ResponseDto.success(result);
     }
 
-    public ResponseDto<?> getMountainsBySearch(String keyword) {
+    public ResponseDto<?> getMountainsBySearch(Long memberId, String keyword) {
         List<Mountain> mountains = mountainRepository.findByNameLike("%" + keyword + "%");
 
-        List<MountainDto> result = mountains.stream().limit(10).map(MountainDto::new).collect(Collectors.toList());
+        List< MountainListResDto > result = mountains.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
 
         return ResponseDto.success(result);
     }
@@ -59,7 +61,7 @@ public class MountainService {
             return ResponseDto.fail(404, "Mountain not found", "산이 존재하지 않습니다.");
         }
 
-        MountainDto mountainDto = MountainDto.builder().mountain(mountain.get()).build();
+        MountainListResDto mountainDto = MountainListResDto.builder().mountain(mountain.get()).build();
 
         List<Record> recordList = RecordRepository.findAll();
 
