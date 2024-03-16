@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +30,8 @@ public class TermService {
         return ResponseDto.success(terms);
     }
 
-    public ResponseDto<?> postMemberTerm(Long memberId, Boolean isMarketing) {
-        int length = isMarketing ? 5 : 4;
+    public ResponseDto<?> postMemberTerm(Long memberId, String marketing) {
+        int length = Objects.equals(marketing, "agree") ? 5 : 4;
         for (int i = 1; i <= length; i++) {
             MemberTerm memberTerm = MemberTerm.builder()
                     .member_id(memberId)
@@ -40,7 +41,7 @@ public class TermService {
             memberTermRepository.save(memberTerm);
         }
 
-        if (isMarketing) {
+        if (Objects.equals(marketing, "agree")) {
             Member member = memberRepository.findById(memberId).get();
 
             member.setIs_noti_push(1);

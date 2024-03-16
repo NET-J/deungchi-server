@@ -6,12 +6,10 @@ import com.netj.deungchi.domain.Member;
 import com.netj.deungchi.domain.MemberLeave;
 import com.netj.deungchi.domain.MemberRequestKeyword;
 import com.netj.deungchi.domain.MemberSearchKeyword;
+import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.member.MemberUpdateDto;
-import com.netj.deungchi.repository.MemberLeaveRepository;
-import com.netj.deungchi.repository.MemberRepository;
-import com.netj.deungchi.repository.MemberRequestKeywordRepository;
-import com.netj.deungchi.repository.MemberSearchKeywordRepository;
+import com.netj.deungchi.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,6 +35,8 @@ public class MemberService {
     public final MemberLeaveRepository memberLeaveRepository;
     public final MemberSearchKeywordRepository memberSearchKeywordRepository;
     public final MemberRequestKeywordRepository memberRequestKeywordRepository;
+    public final RecordRepository recordRepository;
+    public final BadgeRepository badgeRepository;
 
     @Autowired
     private final S3Uploader s3Uploader;
@@ -154,5 +156,20 @@ public class MemberService {
         memberRequestKeywordRepository.save(memberRequestKeyword);
 
         return ResponseDto.success("검색어 요청 완료");
+    }
+
+    public ResponseDto<?> getMypage(Long memberId){
+        Member member = memberRepository.findById(memberId).get();
+
+//        Long badgeCount = badgeRepository.getMemberBadgeCount(memberId);
+        List<Record> records = recordRepository.getMemberRecord(memberId);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("member", member);
+        result.put("recordCount", records.stream().count());
+        result.put("records", records);
+
+//        result.put("badgeCount", badgeCount);
+        return ResponseDto.success(result);
     }
 }

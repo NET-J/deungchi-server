@@ -2,7 +2,9 @@ package com.netj.deungchi.controller;
 
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.member.MemberUpdateDto;
+import com.netj.deungchi.provider.jwt.JwtProvider;
 import com.netj.deungchi.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +15,7 @@ import java.io.IOException;
 @RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
-
+    private final JwtProvider jwtProvider;
     private final MemberService memberService;
 
     @GetMapping
@@ -53,5 +55,11 @@ public class MemberController {
     @PostMapping("/{memberId}/request")
     public ResponseDto<?> postMemberRequestKeyword(@PathVariable Long memberId, @RequestParam String keyword) {
         return memberService.postMemberRequestKeyword(memberId, keyword);
+    }
+
+    @GetMapping("/mypage")
+    public ResponseDto<?> getMypage(HttpServletRequest request) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return memberService.getMypage(memberId);
     }
 }

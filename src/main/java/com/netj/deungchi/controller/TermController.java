@@ -24,9 +24,9 @@ public class TermController {
         return termService.getAllTerm();
     }
 
-    @PostMapping("/member/term")
-    public ResponseDto<?> postMemberTerm(@RequestParam Boolean isMarketing, HttpServletRequest request) throws Exception {
+    @PostMapping("/member")
+    public ResponseDto<?> postMemberTerm(@RequestParam String marketing, HttpServletRequest request) throws Exception {
         Long id = jwtProvider.getIdFromRequest(request);
-        return termService.postMemberTerm(id, isMarketing);
+        return termService.postMemberTerm(id, marketing);
     }
 }
