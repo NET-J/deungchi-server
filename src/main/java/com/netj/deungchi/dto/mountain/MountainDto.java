@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class MountainDto {
+    private Long id;
     private String name;
     private String featuredImage;
     private String location;
@@ -22,6 +23,7 @@ public class MountainDto {
 
     @Builder
     public MountainDto(Mountain mountain){
+        this.id = mountain.getId();
         this.name = mountain.getName();
         this.featuredImage = mountain.getFeatured_image();
         this.location = mountain.getLocation();

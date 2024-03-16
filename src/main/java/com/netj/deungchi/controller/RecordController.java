@@ -1,9 +1,12 @@
 package com.netj.deungchi.controller;
 
+import com.netj.deungchi.dto.image.ImagePostDto;
 import com.netj.deungchi.dto.record.RecordPostReqDto;
 import com.netj.deungchi.dto.ResponseDto;
+import com.netj.deungchi.provider.jwt.JwtProvider;
 import com.netj.deungchi.service.RecordService;
 import com.netj.deungchi.service.S3Uploader;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +22,11 @@ public class RecordController {
 
     private final RecordService recordService;
     private final S3Uploader s3Uploader;
-    @GetMapping
-    public ResponseDto<?> getRecord(@RequestParam Long id) {
-        return recordService.getRecord(id);
+    private final JwtProvider jwtProvider;
+
+    @GetMapping("/{recordId}")
+    public ResponseDto<?> getRecordDetail(@PathVariable Long recordId) {
+        return recordService.getRecord(recordId);
     }
 
     @GetMapping("/all")
@@ -30,10 +35,12 @@ public class RecordController {
     }
 
     @PostMapping
-    public ResponseDto<?> postRecord(@RequestParam Long memberId, @RequestPart RecordPostReqDto recordPostReqDto, @RequestPart List<MultipartFile> imageList) {
-        List<String> imgPaths = s3Uploader.getimgUrlList(imageList);
+    public ResponseDto<?> postRecord(HttpServletRequest request, @RequestPart RecordPostReqDto recordPostReqDto, @RequestPart (required = false) List<MultipartFile> imageList) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
 
-        return recordService.postRecord(recordPostReqDto, memberId, imgPaths);
+        List<ImagePostDto> imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
+
+        return recordService.postRecord(recordPostReqDto, memberId, imagePostDtoList);
     }
 
 }

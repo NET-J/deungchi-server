@@ -3,8 +3,10 @@ package com.netj.deungchi.dto.record;
 import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class RecordPostReqDto {
     private Long mountainId;
     private Long courseId;

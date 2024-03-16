@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -19,15 +21,31 @@ public class Image {
     private Long id;
 
     @Column(nullable = false)
-    private String imageUrl;
+    private String tableName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Record record;
+    @Column(nullable = false)
+    private Long tableId;
+
+    @Column(nullable = false)
+    private String name;  // 파일 원본명
+
+    private Long size;
+
+    @Column(nullable = false)
+    private String url;
+
+    @CreationTimestamp
+    Timestamp createdAt;
+
+    @UpdateTimestamp
+    Timestamp updatedAt;
 
     @Builder
-    public Image(String imageUrl, Record record){
-        this.imageUrl = imageUrl;
-        this.record = record;
+    public Image(String name, Long size, String url, String tableName, Long tableId){
+        this.name = name;
+        this.size = size;
+        this.url = url;
+        this.tableName = tableName;
+        this.tableId = tableId;
     }
 }
