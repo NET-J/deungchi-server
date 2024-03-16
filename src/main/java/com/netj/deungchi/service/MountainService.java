@@ -65,7 +65,6 @@ public class MountainService {
 
         List<Record> recordList = RecordRepository.findAll();
 
-
         List<RecordSimpleResDto> recordListResDtoList = recordList.stream().limit(3).map(RecordSimpleResDto::new).toList();
 
         List<Course> courseList = CourseRepository.findAllByMountain(mountain.get());

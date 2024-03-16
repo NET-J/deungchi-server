@@ -6,10 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
-
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -55,9 +52,6 @@ public class Record {
     Integer temperature;
 
     Boolean isShare;
-
-    @Transient
-    private final List<Image> imageList = new ArrayList<>();
 
     @CreationTimestamp
     Timestamp createdAt;

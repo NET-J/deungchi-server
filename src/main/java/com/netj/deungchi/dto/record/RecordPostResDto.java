@@ -12,6 +12,7 @@ import com.netj.deungchi.domain.Record;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecordPostResDto {
+    private Long id;
     private String mountainName;
     private String hikingDuration;
     private Float hikingLength;
@@ -20,6 +21,7 @@ public class RecordPostResDto {
     public static RecordPostResDto of(Record record) {
         String mountainName = record.getMountain().getName();
         return RecordPostResDto.builder()
+                .id(record.getId())
                 .mountainName(mountainName)
                 .hikingDuration(record.getHikingDuration()).hikingLength(record.getHikingLength())
                 .createdAt(record.getCreatedAt())

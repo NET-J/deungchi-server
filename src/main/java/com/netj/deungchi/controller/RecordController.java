@@ -24,9 +24,9 @@ public class RecordController {
     private final S3Uploader s3Uploader;
     private final JwtProvider jwtProvider;
 
-    @GetMapping
-    public ResponseDto<?> getRecord(@RequestParam Long id) {
-        return recordService.getRecord(id);
+    @GetMapping("/{recordId}")
+    public ResponseDto<?> getRecordDetail(@PathVariable Long recordId) {
+        return recordService.getRecord(recordId);
     }
 
     @GetMapping("/all")

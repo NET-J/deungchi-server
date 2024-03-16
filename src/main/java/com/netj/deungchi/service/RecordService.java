@@ -3,6 +3,8 @@ package com.netj.deungchi.service;
 import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.image.ImagePostDto;
+import com.netj.deungchi.dto.image.ImageUrlListResDto;
+import com.netj.deungchi.dto.record.RecordDetailResDto;
 import com.netj.deungchi.dto.record.RecordPostReqDto;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.record.RecordPostResDto;
@@ -25,16 +27,23 @@ public class RecordService {
     private final CourseRepository courseRepository;
     private final ImageRepository imageRepository;
 
-    public ResponseDto<?> getRecord(Long id) {
+    public ResponseDto<?> getRecord(Long recordId) {
 
-        Optional<Record> record = recordRepository.findById(id);
+        Optional<Record> record = recordRepository.findById(recordId);
 
         if(record.isEmpty()) {
             log.info("기록이 존재하지 않습니다.");
             return ResponseDto.fail(404, "Record not found", "기록이 존재하지 않습니다.");
         }
 
-        return ResponseDto.success(record.get());
+        List<Image> imageList = imageRepository.findAllByTableNameAndTableId(record.get().getClass().getSimpleName(), record.get().getId());
+
+        List<ImageUrlListResDto> imageUrlListResDtoList = imageList.stream().map(ImageUrlListResDto::new).toList();
+
+        RecordDetailResDto recordDetailResDto = RecordDetailResDto.builder().record(record.get()).build();
+        recordDetailResDto.setImageList(imageUrlListResDtoList);
+
+        return ResponseDto.success(recordDetailResDto);
     }
 
     public ResponseDto<?> getRecordList() {
