@@ -6,7 +6,7 @@ import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.course.CourseListResDto;
 import com.netj.deungchi.dto.mountain.MountainListResDto;
-import com.netj.deungchi.dto.record.RecordSimpleResDto;
+import com.netj.deungchi.dto.record.RecordListResDto;
 import com.netj.deungchi.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class MountainService {
     public final MemberSearchKeywordRepository memberSearchKeywordRepository;
     public final BookmarkRepository bookmarkRepository;
     public final RecommendedSearchKeywordRepository RecommendedSearchKeywordRepository;
-    public final RecordRepository RecordRepository;
+    public final RecordRepository recordRepository;
     public final CourseRepository CourseRepository;
     public final ImageRepository imageRepository;
 
@@ -93,11 +93,11 @@ public class MountainService {
 
         MountainListResDto mountainListResDto = MountainListResDto.builder().mountain(mountain.get()).bookmarkRepository(bookmarkRepository).memberId(memberId).build();
 
-        List<Record> recordList = RecordRepository.findAll();
+        List<Record> recordList = recordRepository.findRecordsByMountainId(mountainId);
 
-        List<RecordSimpleResDto> recordListResDtoList = recordList.stream()
+        List<RecordListResDto> recordListResDtoList = recordList.stream()
                 .limit(3)
-                .map(record -> new RecordSimpleResDto(record, imageRepository))
+                .map(record -> new RecordListResDto(record, imageRepository))
                 .toList();
 
 
@@ -114,5 +114,16 @@ public class MountainService {
         result.put("courseList", courseListResDtoList);
 
         return ResponseDto.success(result);
+    }
+
+    public ResponseDto<?> getRecordList(Long mountainId) {
+        List<Record> recordList = recordRepository.findRecordsByMountainId(mountainId);
+
+        List<RecordListResDto> recordListResDtoList = recordList.stream()
+                .map(record -> new RecordListResDto(record, imageRepository))
+                .toList();
+
+        return ResponseDto.success(recordListResDtoList);
+
     }
 }

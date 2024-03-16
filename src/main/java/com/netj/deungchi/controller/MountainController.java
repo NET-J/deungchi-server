@@ -27,6 +27,11 @@ public class MountainController {
         return mountainService.getMountainDetail(memberId, mountainId);
     }
 
+    @GetMapping("/{mountainId}/recordList")
+    public ResponseDto<?> getRecordList(@PathVariable Long mountainId) {
+        return mountainService.getRecordList(mountainId);
+    }
+
     @GetMapping("/recommendedSearchKeyword")
     public ResponseDto<?> getRecommendedSearchKeyword() {
         return mountainService.getRecommendedSearchKeyword();
