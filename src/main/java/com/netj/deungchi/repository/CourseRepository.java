@@ -8,5 +8,5 @@ import java.util.List;
 
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    List<Course> findAllByMountain(Mountain mountain);
+    List<Course> findAllByMountainId(Long mountainId);
 }
