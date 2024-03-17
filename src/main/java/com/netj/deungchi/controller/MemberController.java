@@ -17,7 +17,6 @@ import java.io.IOException;
 public class MemberController {
     private final JwtProvider jwtProvider;
     private final MemberService memberService;
-    private final JwtProvider jwtProvider;
 
     @GetMapping
     public ResponseDto<?> getMember(@RequestParam Long id) {
