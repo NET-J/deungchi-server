@@ -1,8 +1,16 @@
 package com.netj.deungchi.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.sql.Timestamp;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Badge {
 
     @Id
@@ -11,4 +19,20 @@ public class Badge {
 
     @Column(nullable = false)
     private String name;
+
+    @ManyToOne
+    Mountain mountain;
+    String description;
+    String version;
+    String featuredImage;
+
+
+    @Builder
+    public Badge(Mountain mountain, String name, String description, String version, String featuredImage) {
+        this.mountain = mountain;
+        this.name = name;
+        this.description = description;
+        this.version = version;
+        this.featuredImage = featuredImage;
+    }
 }

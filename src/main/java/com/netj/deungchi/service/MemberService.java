@@ -2,10 +2,7 @@ package com.netj.deungchi.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.amazonaws.util.StringUtils;
-import com.netj.deungchi.domain.Member;
-import com.netj.deungchi.domain.MemberLeave;
-import com.netj.deungchi.domain.MemberRequestKeyword;
-import com.netj.deungchi.domain.MemberSearchKeyword;
+import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.member.MemberUpdateDto;
@@ -141,13 +138,31 @@ public class MemberService {
     public ResponseDto<?> getMypage(Long memberId){
         Member member = memberRepository.findById(memberId).get();
 
-//        Long badgeCount = badgeRepository.getMemberBadgeCount(memberId);
         List<Record> records = recordRepository.getMemberRecord(memberId);
+        List<Badge> badges = badgeRepository.getMemberBadge(memberId);
 
         Map<String, Object> result = new HashMap<>();
         result.put("member", member);
         result.put("recordCount", records.size());
-        result.put("records", records);
+        result.put("badgeCount", badges.size());
+
+        List<Record> subRecord;
+        if (records.size() > 3) {
+            subRecord = records.subList(0, 2);
+        } else {
+            subRecord = records;
+        }
+
+        List<Badge> subBadge;
+        if (badges.size() > 3) {
+            subBadge = badges.subList(0, 2);
+        } else {
+            subBadge = badges;
+        }
+
+
+        result.put("records", subRecord);
+        result.put("badges", subBadge);
 
 //        result.put("badgeCount", badgeCount);
         return ResponseDto.success(result);

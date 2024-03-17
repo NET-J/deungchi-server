@@ -15,6 +15,6 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     @Query(value = "select r.*, m.name as mountain_name, m.featured_image as mountain_featured_image " +
             "from record as r " +
             "inner join mountain m on r.mountain_id = m.id " +
-            "WHERE r.member_id = ?1", nativeQuery = true)
+            "WHERE r.member_id = ?1 order by r.id desc", nativeQuery = true)
     List<Record> getMemberRecord(Long memberId);
 }

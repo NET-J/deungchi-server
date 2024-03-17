@@ -24,7 +24,7 @@ public class Bookmark {
     @Column
     private Long member_id;
 
-    @Column
+    @Column(insertable=false, updatable=false)
     private Long mountain_id;
 
     @CreationTimestamp
@@ -32,6 +32,6 @@ public class Bookmark {
     private LocalDateTime created_at;
 
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(referencedColumnName = "id", name = "mountain_id")
     private Mountain mountain;
 }
