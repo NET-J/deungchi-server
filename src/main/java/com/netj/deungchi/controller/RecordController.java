@@ -5,6 +5,7 @@ import com.netj.deungchi.dto.record.RecordPostReqDto;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.record.RecordUpdateReqDto;
 import com.netj.deungchi.provider.jwt.JwtProvider;
+import com.netj.deungchi.service.GeoUtils;
 import com.netj.deungchi.service.RecordService;
 import com.netj.deungchi.service.S3Uploader;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ public class RecordController {
     private final RecordService recordService;
     private final S3Uploader s3Uploader;
     private final JwtProvider jwtProvider;
+    private final GeoUtils geoUtils;
 
     @GetMapping("/{recordId}")
     public ResponseDto<?> getRecordDetail(@PathVariable Long recordId) {
@@ -53,4 +55,9 @@ public class RecordController {
         return recordService.updateRecord(recordId, recordUpdateReqDto, imagePostDtoList);
     }
 
+
+    @GetMapping("/startLocation/map")
+    public ResponseDto<?> getStartLocation(@RequestParam float latitude, @RequestParam float longitutde) {
+        return geoUtils.findMountainsInRadius(latitude, longitutde, 500);
+    }
 }
