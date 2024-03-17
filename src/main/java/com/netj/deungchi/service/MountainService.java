@@ -101,7 +101,7 @@ public class MountainService {
                 .toList();
 
 
-        List<Course> courseList = CourseRepository.findAllByMountain(mountain.get());
+        List<Course> courseList = CourseRepository.findAllByMountainId(mountain.get().getId());
 
         List<CourseListResDto> courseListResDtoList = courseList.stream()
                 .limit(3)

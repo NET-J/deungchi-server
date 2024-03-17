@@ -27,6 +27,12 @@ public class RecordController {
     private final JwtProvider jwtProvider;
     private final GeoUtils geoUtils;
 
+    @GetMapping("/{recordId}/endLocation")
+    public ResponseDto<?> getEndLocation(@PathVariable Long recordId) {
+        log.info("getEndLocation");
+        return recordService.getEndLocation(recordId);
+    }
+
     @GetMapping("/{recordId}")
     public ResponseDto<?> getRecordDetail(@PathVariable Long recordId) {
         return recordService.getRecord(recordId);
