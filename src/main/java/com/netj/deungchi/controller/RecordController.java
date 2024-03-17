@@ -3,6 +3,7 @@ package com.netj.deungchi.controller;
 import com.netj.deungchi.dto.image.ImagePostDto;
 import com.netj.deungchi.dto.record.RecordPostReqDto;
 import com.netj.deungchi.dto.ResponseDto;
+import com.netj.deungchi.dto.record.RecordUpdateReqDto;
 import com.netj.deungchi.provider.jwt.JwtProvider;
 import com.netj.deungchi.service.RecordService;
 import com.netj.deungchi.service.S3Uploader;
@@ -41,6 +42,15 @@ public class RecordController {
         List<ImagePostDto> imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
 
         return recordService.postRecord(recordPostReqDto, memberId, imagePostDtoList);
+    }
+
+    @PutMapping("/{recordId}")
+    public ResponseDto<?> updateRecordDetail(@PathVariable Long recordId, @RequestPart RecordUpdateReqDto recordUpdateReqDto, @RequestPart (required = false) List<MultipartFile> imageList)  {
+
+        recordService.deleteRecordImage(recordId);
+        List<ImagePostDto> imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
+
+        return recordService.updateRecord(recordId, recordUpdateReqDto, imagePostDtoList);
     }
 
 }

@@ -8,10 +8,13 @@ import com.netj.deungchi.dto.record.RecordDetailResDto;
 import com.netj.deungchi.dto.record.RecordPostReqDto;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.record.RecordPostResDto;
+import com.netj.deungchi.dto.record.RecordUpdateReqDto;
 import com.netj.deungchi.repository.*;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +29,7 @@ public class RecordService {
     private final MountainRepository mountainRepository;
     private final CourseRepository courseRepository;
     private final ImageRepository imageRepository;
+    private final EntityManager em;
 
     public ResponseDto<?> getRecord(Long recordId) {
 
@@ -79,6 +83,34 @@ public class RecordService {
             log.info("유저가 존재하지 않습니다.");
             return ResponseDto.fail(404, "Member not found", "유저가 존재하지 않습니다.");
         }
+    }
+
+    public ResponseDto<?> updateRecord(Long recordId, RecordUpdateReqDto recordUpdateReqDto, List<ImagePostDto> imagePostDtoList) {
+
+        Record record = em.find(Record.class, recordId);
+
+        record.setContent(recordUpdateReqDto.getContent());
+        record.setLevel(recordUpdateReqDto.getLevel());
+        record.setIsShare(recordUpdateReqDto.getIsShare());
+
+        for (ImagePostDto imagePostDto : imagePostDtoList) {
+            Image img = Image.builder()
+                    .url(imagePostDto.getUrl())
+                    .name(imagePostDto.getName())
+                    .size(imagePostDto.getSize())
+                    .tableName(record.getClass().getSimpleName())
+                    .tableId(record.getId())
+                    .build();
+
+            imageRepository.save(img);
+        }
+
+        return ResponseDto.success("수정되었습니다.");
+    }
+    @Transactional
+    public void deleteRecordImage(Long recordId) {
+        // 기존 이미지 삭제
+        imageRepository.deleteAllByTableNameAndTableId("Record", recordId);
     }
 
 }

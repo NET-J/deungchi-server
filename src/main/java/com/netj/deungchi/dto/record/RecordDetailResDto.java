@@ -23,6 +23,7 @@ public class RecordDetailResDto {
     private Float hikingLength;
     private Integer temperature;
     private String content;
+    private Boolean isShare;
     private List<ImageUrlListResDto> imageList;
     private Date createdAt;
 
@@ -36,6 +37,7 @@ public class RecordDetailResDto {
         this.hikingLength = record.getHikingLength();
         this.temperature = record.getTemperature();
         this.content = record.getContent();
+        this.isShare = record.getIsShare();
         this.createdAt = record.getCreatedAt();
     }
 }
