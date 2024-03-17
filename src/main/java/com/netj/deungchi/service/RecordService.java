@@ -115,12 +115,25 @@ public class RecordService {
     }
 
     public ResponseDto<?> getStartLocationBySearch(String keyword) {
-        log.info(keyword);
         List<Mountain> mountainsFindByName = mountainRepository.findByNameLike("%" + keyword + "%");
 
         List <MountainStartLocationResDto> result = mountainsFindByName.stream().map(MountainStartLocationResDto::new).toList();
 
         return ResponseDto.success(result);
+    }
+
+    public ResponseDto<?> postStartLocation(Long memberId, Long mountainId) {
+        Optional<Mountain> mountain = mountainRepository.findById(mountainId);
+        if(mountain.isEmpty()){
+            return ResponseDto.fail(404, "Mountain not found", "등산하는 곳이 존재하지 않습니다.");
+        } else {
+            Optional<Member> member = memberRepository.findById(memberId);
+            Record record= Record.builder().mountain(mountain.get()).member(member.get()).build();
+            recordRepository.save(record);
+
+            return ResponseDto.success("등산하는 곳이 설정되었습니다.");
+        }
+
     }
 
 }

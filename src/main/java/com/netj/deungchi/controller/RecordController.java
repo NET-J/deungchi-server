@@ -65,4 +65,10 @@ public class RecordController {
     public ResponseDto<?> getStartLocation(@RequestParam String keyword) {
         return recordService.getStartLocationBySearch(keyword);
     }
+
+    @PostMapping("/startLocation")
+    public ResponseDto<?> postStartLocation(HttpServletRequest request, @RequestParam Long mountainId) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return recordService.postStartLocation(memberId, mountainId);
+    }
 }
