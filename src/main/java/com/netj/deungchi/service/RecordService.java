@@ -4,6 +4,7 @@ import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.image.ImagePostDto;
 import com.netj.deungchi.dto.image.ImageUrlListResDto;
+import com.netj.deungchi.dto.mountain.MountainStartLocationResDto;
 import com.netj.deungchi.dto.record.RecordDetailResDto;
 import com.netj.deungchi.dto.record.RecordPostReqDto;
 import com.netj.deungchi.dto.ResponseDto;
@@ -111,6 +112,15 @@ public class RecordService {
     public void deleteRecordImage(Long recordId) {
         // 기존 이미지 삭제
         imageRepository.deleteAllByTableNameAndTableId("Record", recordId);
+    }
+
+    public ResponseDto<?> getStartLocationBySearch(String keyword) {
+        log.info(keyword);
+        List<Mountain> mountainsFindByName = mountainRepository.findByNameLike("%" + keyword + "%");
+
+        List <MountainStartLocationResDto> result = mountainsFindByName.stream().map(MountainStartLocationResDto::new).toList();
+
+        return ResponseDto.success(result);
     }
 
 }
