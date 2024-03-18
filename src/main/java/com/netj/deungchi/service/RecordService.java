@@ -4,6 +4,7 @@ import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.image.ImagePostDto;
 import com.netj.deungchi.dto.image.ImageUrlListResDto;
+import com.netj.deungchi.dto.mountain.MountainStartLocationResDto;
 import com.netj.deungchi.dto.record.RecordDetailResDto;
 import com.netj.deungchi.dto.record.RecordPostReqDto;
 import com.netj.deungchi.dto.ResponseDto;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +30,7 @@ public class RecordService {
     private final MemberRepository memberRepository;
     private final MountainRepository mountainRepository;
     private final CourseRepository courseRepository;
+    private final CourseDetailRepository courseDetailRepository;
     private final ImageRepository imageRepository;
     private final EntityManager em;
 
@@ -111,6 +114,51 @@ public class RecordService {
     public void deleteRecordImage(Long recordId) {
         // 기존 이미지 삭제
         imageRepository.deleteAllByTableNameAndTableId("Record", recordId);
+    }
+
+    public ResponseDto<?> getStartLocationBySearch(String keyword) {
+        List<Mountain> mountainsFindByName = mountainRepository.findByNameLike("%" + keyword + "%");
+
+        List <MountainStartLocationResDto> result = mountainsFindByName.stream().map(MountainStartLocationResDto::new).toList();
+
+        return ResponseDto.success(result);
+    }
+
+    public ResponseDto<?> postStartLocation(Long memberId, Long mountainId) {
+        Optional<Mountain> mountain = mountainRepository.findById(mountainId);
+        if(mountain.isEmpty()){
+            return ResponseDto.fail(404, "Mountain not found", "등산하는 곳이 존재하지 않습니다.");
+        } else {
+            Optional<Member> member = memberRepository.findById(memberId);
+            Record record= Record.builder().mountain(mountain.get()).member(member.get()).build();
+            recordRepository.save(record);
+
+            return ResponseDto.success("등산하는 곳이 설정되었습니다.");
+        }
+
+    }
+
+    public ResponseDto<?> getEndLocation(Long recordId) {
+        Optional<Record> record = recordRepository.findById(recordId);
+        log.info("recordService.getEndLocation");
+        if(record.isEmpty()){
+            return ResponseDto.fail(404, "Record not found", "등산하는 곳이 설정되지 않습니다.");
+        } else {
+            List<Course> courseList = courseRepository.findAllByMountainId(record.get().getMountain().getId());
+
+            log.info("courseList");
+
+
+            List<CourseDetail> courseDetailList = new ArrayList<>();
+
+            for (Course course : courseList) {
+                List<CourseDetail> courseDetails = courseDetailRepository.findAllByCourseId(course.getId());
+                courseDetailList.addAll(courseDetails);
+            }
+
+            return ResponseDto.success(courseDetailList);
+
+        }
     }
 
 }
