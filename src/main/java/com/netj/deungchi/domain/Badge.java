@@ -1,5 +1,6 @@
 package com.netj.deungchi.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -22,6 +23,11 @@ public class Badge {
 
     @ManyToOne
     Mountain mountain;
+
+    @OneToOne
+    @JoinColumn(referencedColumnName = "badge_id", name = "id")
+    MemberBadge memberBadge;
+
     String description;
     String version;
     String featuredImage;

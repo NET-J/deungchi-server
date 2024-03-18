@@ -36,6 +36,10 @@ public class AuthService {
         }
         Optional<Member> member = Optional.ofNullable(memberRepository.findByProviderId("kakao", kakaoLoginDto.getId()));
 
+        if (member.get().getDeleted_at() != null) {
+            return ResponseDto.fail(400, "error", "leave member");
+        }
+
         if (member.isEmpty()) {
             Member newMember = Member.builder()
                     .provider("kakao")

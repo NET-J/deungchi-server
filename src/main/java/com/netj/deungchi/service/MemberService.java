@@ -34,6 +34,7 @@ public class MemberService {
     public final MemberRequestKeywordRepository memberRequestKeywordRepository;
     public final RecordRepository recordRepository;
     public final BadgeRepository badgeRepository;
+    public final MemberStampRepository memberStampRepository;
 
     @Autowired
     private final S3Uploader s3Uploader;
@@ -99,7 +100,7 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).get();
         member.setDeleted_at(date);
 
-        return ResponseDto.success(null);
+        return ResponseDto.success("회원 탈퇴 완료");
     }
 
     public ResponseDto<?> getResentKeyword(Long memberId) {
@@ -167,4 +168,32 @@ public class MemberService {
 //        result.put("badgeCount", badgeCount);
         return ResponseDto.success(result);
     }
+
+    public ResponseDto<?> getMemberBadge(Long memberId){
+//        Member member = memberRepository.findById(memberId).get();
+
+//        List<Record> records = recordRepository.getMemberRecord(memberId);
+        List<Badge> collectBadges = badgeRepository.getMemberBadge(memberId);
+        List<Badge> notCollectBadges = badgeRepository.getNotMemberBadge(memberId);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("collectBadges", collectBadges);
+        result.put("notCollectBadges", notCollectBadges);
+
+        return ResponseDto.success(result);
+    }
+
+    public ResponseDto<?> getMemberBadgeDetail(Long memberId, Long BadgeId){
+
+        Badge badge = badgeRepository.getMemberBadgeBadgeId(memberId, BadgeId);
+        List<MemberStamp> memberStamps = memberStampRepository.getMemberStampByMountainId(memberId, Long.parseLong(String.valueOf(badge.getMountain().getId())));
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("badge", badge);
+        result.put("memberStamps", memberStamps);
+
+        return ResponseDto.success(result);
+    }
+
+
 }
