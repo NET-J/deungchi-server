@@ -13,11 +13,15 @@ public class MountainStartLocationResDto {
     private Long id;
     private String name;
     private String location;
+    private Double latitude;
+    private Double longitude;
 
     @Builder
     public MountainStartLocationResDto(Mountain mountain) {
         this.id = mountain.getId();
         this.name = mountain.getName();
         this.location = mountain.getLocation();
+        this.latitude = mountain.getLatitude();
+        this.longitude = mountain.getLongitude();
     }
 }

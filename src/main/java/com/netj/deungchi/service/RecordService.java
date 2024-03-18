@@ -5,11 +5,8 @@ import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.image.ImagePostDto;
 import com.netj.deungchi.dto.image.ImageUrlListResDto;
 import com.netj.deungchi.dto.mountain.MountainStartLocationResDto;
-import com.netj.deungchi.dto.record.RecordDetailResDto;
-import com.netj.deungchi.dto.record.RecordPostReqDto;
+import com.netj.deungchi.dto.record.*;
 import com.netj.deungchi.dto.ResponseDto;
-import com.netj.deungchi.dto.record.RecordPostResDto;
-import com.netj.deungchi.dto.record.RecordUpdateReqDto;
 import com.netj.deungchi.repository.*;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -158,6 +155,41 @@ public class RecordService {
 
             return ResponseDto.success(courseDetailList);
 
+        }
+    }
+
+    public ResponseDto<?> updateStartLocation(Long recordId, Long mountainId) {
+        Record record = em.find(Record.class, recordId);
+
+        Optional<Mountain> mountain = mountainRepository.findById(mountainId);
+
+        if(mountain.isEmpty()){
+            return ResponseDto.fail(404, "Mountain not found", "등산하는 곳이 존재하지 않습니다.");
+        } else {
+            record.setMountain(mountain.get());
+            recordRepository.save(record);
+
+            return ResponseDto.success("등산하는 곳이 변경되었습니다.");
+        }
+    }
+
+    public ResponseDto<?> postEndLocation(Long recordId, Long courseDetailId) {
+        Optional<CourseDetail> courseDetail = courseDetailRepository.findById(courseDetailId);
+
+        if(courseDetail.isEmpty()){
+            return ResponseDto.fail(404, "Course not found", "해당 코스가 존재하지 않습니다.");
+        } else {
+            Optional<Course> course = courseRepository.findById(courseDetail.get().getCourse().getId());
+            Record record = em.find(Record.class, recordId);
+
+            record.setCourse(course.get());
+            record.setEndLocation(courseDetail.get().getName());
+
+            log.info(courseDetail.get().getName());
+
+            recordRepository.save(record);
+
+            return ResponseDto.success("목적지가 설정되었습니다.");
         }
     }
 

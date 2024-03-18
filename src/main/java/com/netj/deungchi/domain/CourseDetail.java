@@ -23,6 +23,6 @@ public class CourseDetail {
     @Column(nullable = false)
     private String name;
 
-    private Float latitude;
-    private Float longitude;
+    private Double latitude;
+    private Double longitude;
 }

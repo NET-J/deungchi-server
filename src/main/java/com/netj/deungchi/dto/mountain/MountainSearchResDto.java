@@ -18,8 +18,8 @@ public class MountainSearchResDto {
     private String level;
     private String averageTime;
     private String altitude;
-    private Float latitude;
-    private Float longitude;
+    private Double latitude;
+    private Double longitude;
     private Boolean isBookmark;
 
     @Builder

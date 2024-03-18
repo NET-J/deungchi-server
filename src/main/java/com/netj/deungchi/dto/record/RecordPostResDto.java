@@ -15,7 +15,7 @@ public class RecordPostResDto {
     private Long id;
     private String mountainName;
     private String hikingDuration;
-    private Float hikingLength;
+    private Double hikingLength;
     private Timestamp createdAt;
 
     public static RecordPostResDto of(Record record) {

@@ -15,7 +15,7 @@ public class MountainMapGetReqDto {
     private String content;
     private Boolean isShare;
     private String hikingDuration;
-    private Float hikingLength;
+    private Double hikingLength;
 
     public Record toRecordEntity(Member member, Mountain mountain, Course course) {
         return Record.builder()

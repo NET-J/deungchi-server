@@ -63,7 +63,7 @@ public class RecordController {
 
 
     @GetMapping("/startLocation/map")
-    public ResponseDto<?> getStartLocation(@RequestParam float latitude, @RequestParam float longitutde) {
+    public ResponseDto<?> getStartLocation(@RequestParam Double latitude, @RequestParam Double longitutde) {
         return geoUtils.findMountainsInRadius(latitude, longitutde, 500);
     }
 
@@ -77,4 +77,16 @@ public class RecordController {
         Long memberId = jwtProvider.getIdFromRequest(request);
         return recordService.postStartLocation(memberId, mountainId);
     }
+
+    @PutMapping("/{recordId}/startLocation")
+    public ResponseDto<?> updateStartLocation(@PathVariable Long recordId, @RequestParam Long mountainId) {
+        return recordService.updateStartLocation(recordId, mountainId);
+    }
+
+    @PostMapping("/{recordId}/endLocation")
+    public ResponseDto<?> postEndLocation(@PathVariable Long recordId, @RequestParam Long courseDetailId) {
+        return recordService.postEndLocation(recordId, courseDetailId);
+    }
+
+
 }
