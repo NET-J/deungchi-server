@@ -176,4 +176,25 @@ public class RecordService {
         }
     }
 
+    public ResponseDto<?> postEndLocation(Long recordId, Long courseDetailId) {
+        Optional<CourseDetail> courseDetail = courseDetailRepository.findById(courseDetailId);
+
+        if(courseDetail.isEmpty()){
+            return ResponseDto.fail(404, "Course not found", "해당 코스가 존재하지 않습니다.");
+        } else {
+            Optional<Course> course = courseRepository.findById(courseDetail.get().getCourse().getId());
+            Record record = em.find(Record.class, recordId);
+
+            record.setCourse(course.get());
+            record.setEndLocation(courseDetail.get().getName());
+
+            log.info(courseDetail.get().getName());
+
+            recordRepository.save(record);
+
+            return ResponseDto.success("목적지가 설정되었습니다.");
+        }
+
+    }
+
 }

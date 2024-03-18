@@ -82,4 +82,9 @@ public class RecordController {
     public ResponseDto<?> updateStartLocation(@PathVariable Long recordId, @RequestParam Long mountainId) {
         return recordService.updateStartLocation(recordId, mountainId);
     }
+
+    @PostMapping("/{recordId}/endLocation")
+    public ResponseDto<?> postEndLocation(@PathVariable Long recordId, @RequestParam Long courseDetailId) {
+        return recordService.postEndLocation(recordId, courseDetailId);
+    }
 }
