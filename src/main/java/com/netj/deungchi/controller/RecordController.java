@@ -87,4 +87,6 @@ public class RecordController {
     public ResponseDto<?> postEndLocation(@PathVariable Long recordId, @RequestParam Long courseDetailId) {
         return recordService.postEndLocation(recordId, courseDetailId);
     }
+
+
 }

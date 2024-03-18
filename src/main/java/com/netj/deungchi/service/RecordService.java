@@ -5,11 +5,8 @@ import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.image.ImagePostDto;
 import com.netj.deungchi.dto.image.ImageUrlListResDto;
 import com.netj.deungchi.dto.mountain.MountainStartLocationResDto;
-import com.netj.deungchi.dto.record.RecordDetailResDto;
-import com.netj.deungchi.dto.record.RecordPostReqDto;
+import com.netj.deungchi.dto.record.*;
 import com.netj.deungchi.dto.ResponseDto;
-import com.netj.deungchi.dto.record.RecordPostResDto;
-import com.netj.deungchi.dto.record.RecordUpdateReqDto;
 import com.netj.deungchi.repository.*;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -194,7 +191,6 @@ public class RecordService {
 
             return ResponseDto.success("목적지가 설정되었습니다.");
         }
-
     }
 
 }
