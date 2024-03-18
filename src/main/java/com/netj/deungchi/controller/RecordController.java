@@ -77,4 +77,9 @@ public class RecordController {
         Long memberId = jwtProvider.getIdFromRequest(request);
         return recordService.postStartLocation(memberId, mountainId);
     }
+
+    @PutMapping("/{recordId}/startLocation")
+    public ResponseDto<?> updateStartLocation(@PathVariable Long recordId, @RequestParam Long mountainId) {
+        return recordService.updateStartLocation(recordId, mountainId);
+    }
 }

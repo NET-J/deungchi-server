@@ -161,4 +161,19 @@ public class RecordService {
         }
     }
 
+    public ResponseDto<?> updateStartLocation(Long recordId, Long mountainId) {
+        Record record = em.find(Record.class, recordId);
+
+        Optional<Mountain> mountain = mountainRepository.findById(mountainId);
+
+        if(mountain.isEmpty()){
+            return ResponseDto.fail(404, "Mountain not found", "등산하는 곳이 존재하지 않습니다.");
+        } else {
+            record.setMountain(mountain.get());
+            recordRepository.save(record);
+
+            return ResponseDto.success("등산하는 곳이 변경되었습니다.");
+        }
+    }
+
 }
