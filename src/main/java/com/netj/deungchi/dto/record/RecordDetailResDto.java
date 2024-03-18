@@ -20,7 +20,7 @@ public class RecordDetailResDto {
     private String endLocation;
     private String level;
     private String hikingDuration;
-    private Float hikingLength;
+    private Double hikingLength;
     private Integer temperature;
     private String content;
     private Boolean isShare;

@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class MemberLocationReqDto {
     private Long recordId;
-    private Float latitude;
-    private Float longitude;
+    private Double latitude;
+    private Double longitude;
 }

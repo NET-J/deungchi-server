@@ -63,7 +63,7 @@ public class RecordController {
 
 
     @GetMapping("/startLocation/map")
-    public ResponseDto<?> getStartLocation(@RequestParam float latitude, @RequestParam float longitutde) {
+    public ResponseDto<?> getStartLocation(@RequestParam Double latitude, @RequestParam Double longitutde) {
         return geoUtils.findMountainsInRadius(latitude, longitutde, 500);
     }
 

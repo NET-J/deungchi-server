@@ -28,14 +28,14 @@ public class MemberLocation {
     @ManyToOne
     private Record record;
 
-    private Float latitude;
-    private Float longitude;
+    private Double latitude;
+    private Double longitude;
 
     @CreationTimestamp
     Timestamp createdAt;
 
     @Builder
-    public MemberLocation(Member member, Record record, Float latitude, Float longitude) {
+    public MemberLocation(Member member, Record record, Double latitude, Double longitude) {
         this.member = member;
         this.record = record;
         this.latitude = latitude;

@@ -13,8 +13,8 @@ public class MountainCooridateDto {
     private Long id;
     private String name;
     private String location;
-    private Float latitude;
-    private Float longitude;
+    private Double latitude;
+    private Double longitude;
 
     @Builder
     public MountainCooridateDto(Mountain mountain){
