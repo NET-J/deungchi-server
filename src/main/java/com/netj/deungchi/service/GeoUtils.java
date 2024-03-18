@@ -29,8 +29,8 @@ public class GeoUtils {
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        // 거리 계산
-        return EARTH_RADIUS * c;
+        // 거리 계산 (m로 변환)
+        return EARTH_RADIUS * c * 1000;
     }
 
     // 반경 내의 산 추출

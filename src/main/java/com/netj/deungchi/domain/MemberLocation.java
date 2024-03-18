@@ -2,16 +2,14 @@ package com.netj.deungchi.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberLocation {
@@ -30,15 +28,17 @@ public class MemberLocation {
 
     private Double latitude;
     private Double longitude;
+    private Double distance;
 
     @CreationTimestamp
     Timestamp createdAt;
 
     @Builder
-    public MemberLocation(Member member, Record record, Double latitude, Double longitude) {
+    public MemberLocation(Member member, Record record, Double latitude, Double longitude, Double distance) {
         this.member = member;
         this.record = record;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.distance = distance;
     }
 }
