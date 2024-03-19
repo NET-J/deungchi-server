@@ -21,6 +21,7 @@ public class MountainListResDto {
     private Double latitude;
     private Double longitude;
     private Boolean isBookmark;
+    private Boolean isShow;
 
     @Builder
     public MountainListResDto(Mountain mountain, BookmarkRepository bookmarkRepository, Long memberId){
@@ -33,6 +34,7 @@ public class MountainListResDto {
         this.altitude = mountain.getAltitude();
         this.latitude = mountain.getLatitude();
         this.longitude = mountain.getLongitude();
+        this.isShow = mountain.getIsShow();
         this.isBookmark = bookmarkRepository.findByMemberIdAndMountainId(memberId, this.id).isPresent();
     }
 }
