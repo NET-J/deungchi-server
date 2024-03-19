@@ -77,9 +77,11 @@ public class MemberService {
 
     public ResponseDto<?> updateProfileImage(Long id, MultipartFile profileImage) throws IOException {
         Member member = memberRepository.findById(id).get();
-        String storedFileName = s3Uploader.upload(profileImage,"member/profileImages");
+        if (profileImage != null) {
+            String storedFileName = s3Uploader.upload(profileImage,"member/profileImages");
+            member.setProfile_image(storedFileName);
+        }
 
-        member.setProfile_image(storedFileName);
 
         return ResponseDto.success(member);
     }

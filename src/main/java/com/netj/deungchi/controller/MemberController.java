@@ -37,8 +37,9 @@ public class MemberController {
         return memberService.updateMember(memberId, memberUpdateDto);
     }
     @PostMapping("/profile")
-    public ResponseDto<?> updateImage(@RequestParam Long id, @RequestParam MultipartFile profileImage) throws IOException {
-        return memberService.updateProfileImage(id, profileImage);
+    public ResponseDto<?> updateImage(HttpServletRequest request, @RequestBody(required = false) MultipartFile file) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return memberService.updateProfileImage(memberId, file);
     }
 
     @DeleteMapping("/leave")
