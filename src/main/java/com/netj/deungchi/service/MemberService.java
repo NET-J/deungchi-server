@@ -2,10 +2,7 @@ package com.netj.deungchi.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.amazonaws.util.StringUtils;
-import com.netj.deungchi.domain.Member;
-import com.netj.deungchi.domain.MemberLeave;
-import com.netj.deungchi.domain.MemberRequestKeyword;
-import com.netj.deungchi.domain.MemberSearchKeyword;
+import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.member.MemberUpdateDto;
@@ -37,6 +34,7 @@ public class MemberService {
     public final MemberRequestKeywordRepository memberRequestKeywordRepository;
     public final RecordRepository recordRepository;
     public final BadgeRepository badgeRepository;
+    public final MemberStampRepository memberStampRepository;
 
     @Autowired
     private final S3Uploader s3Uploader;
@@ -79,9 +77,11 @@ public class MemberService {
 
     public ResponseDto<?> updateProfileImage(Long id, MultipartFile profileImage) throws IOException {
         Member member = memberRepository.findById(id).get();
-        String storedFileName = s3Uploader.upload(profileImage,"member/profileImages");
+        if (profileImage != null) {
+            String storedFileName = s3Uploader.upload(profileImage,"member/profileImages");
+            member.setProfile_image(storedFileName);
+        }
 
-        member.setProfile_image(storedFileName);
 
         return ResponseDto.success(member);
     }
@@ -102,7 +102,7 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).get();
         member.setDeleted_at(date);
 
-        return ResponseDto.success(null);
+        return ResponseDto.success("회원 탈퇴 완료");
     }
 
     public ResponseDto<?> getResentKeyword(Long memberId) {
@@ -141,15 +141,61 @@ public class MemberService {
     public ResponseDto<?> getMypage(Long memberId){
         Member member = memberRepository.findById(memberId).get();
 
-//        Long badgeCount = badgeRepository.getMemberBadgeCount(memberId);
         List<Record> records = recordRepository.getMemberRecord(memberId);
+        List<Badge> badges = badgeRepository.getMemberBadge(memberId);
 
         Map<String, Object> result = new HashMap<>();
         result.put("member", member);
         result.put("recordCount", records.size());
-        result.put("records", records);
+        result.put("badgeCount", badges.size());
+
+        List<Record> subRecord;
+        if (records.size() > 3) {
+            subRecord = records.subList(0, 2);
+        } else {
+            subRecord = records;
+        }
+
+        List<Badge> subBadge;
+        if (badges.size() > 3) {
+            subBadge = badges.subList(0, 2);
+        } else {
+            subBadge = badges;
+        }
+
+
+        result.put("records", subRecord);
+        result.put("badges", subBadge);
 
 //        result.put("badgeCount", badgeCount);
         return ResponseDto.success(result);
     }
+
+    public ResponseDto<?> getMemberBadge(Long memberId){
+//        Member member = memberRepository.findById(memberId).get();
+
+//        List<Record> records = recordRepository.getMemberRecord(memberId);
+        List<Badge> collectBadges = badgeRepository.getMemberBadge(memberId);
+        List<Badge> notCollectBadges = badgeRepository.getNotMemberBadge(memberId);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("collectBadges", collectBadges);
+        result.put("notCollectBadges", notCollectBadges);
+
+        return ResponseDto.success(result);
+    }
+
+    public ResponseDto<?> getMemberBadgeDetail(Long memberId, Long BadgeId){
+
+        Badge badge = badgeRepository.getMemberBadgeBadgeId(memberId, BadgeId);
+        List<MemberStamp> memberStamps = memberStampRepository.getMemberStampByMountainId(memberId, Long.parseLong(String.valueOf(badge.getMountain().getId())));
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("badge", badge);
+        result.put("memberStamps", memberStamps);
+
+        return ResponseDto.success(result);
+    }
+
+
 }
