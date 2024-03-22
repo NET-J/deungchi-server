@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,21 +34,23 @@ public class MemberLocationService {
         MemberLocation memberLocation = MemberLocation.builder().member(member.get()).record(record.get()).latitude(memberLocationReqDto.getLatitude()).longitude(memberLocationReqDto.getLongitude()).build();
         memberLocationRepository.save(memberLocation);
 
+        Double totalDistance = calculateMemberTotalDistance(memberId, memberLocationReqDto.getRecordId());
+
         if(isEndLocation(memberLocation.getRecord().getId())){
             Optional<CourseDetail> courseDetail = courseDetailRepository.findById(record.get().getCourseDetail().getId());
 
-            double distance = geoUtils.calculateDistance(memberLocation.getLatitude(), memberLocation.getLongitude(), courseDetail.get().getLatitude(), courseDetail.get().getLongitude());
+            double distanceByEndLocation = geoUtils.calculateDistance(memberLocation.getLatitude(), memberLocation.getLongitude(), courseDetail.get().getLatitude(), courseDetail.get().getLongitude());
             MemberLocation memberLocationUpdate = em.find(MemberLocation.class, memberLocation.getId());
-            memberLocationUpdate.setDistance(distance);
+            memberLocationUpdate.setDistance(distanceByEndLocation);
             memberLocationRepository.save(memberLocation);
 
-            if(distance < 50) {
+            if(distanceByEndLocation < 50) {
                 stampService.postMemberStamp(memberId, record.get().getId());
                 return ResponseDto.fail(201, "End Record", "목적지에 도착했습니다.");
             }
         }
 
-        return ResponseDto.success("기록 중입니다.");
+        return ResponseDto.success(Collections.singletonMap("hikingLength", totalDistance));
     }
 
     public boolean isEndLocation(Long recordId) {
@@ -56,6 +60,36 @@ public class MemberLocationService {
             return record.getCourseDetail() != null;
         }
         return false; // 레코드가 존재하지 않는 경우
+    }
+
+    public Double calculateMemberTotalDistance(Long memberId, Long recordId) {
+        List<MemberLocation> memberLocationList = memberLocationRepository.findAllByMemberIdAndRecordIdOrderByIdAsc(memberId, recordId);
+        double totalDistance = 0.0; // 총 이동 거리를 저장할 변수 초기화
+
+        // 이전 위치를 저장할 변수 초기화
+        double prevLat = 0.0;
+        double prevLon = 0.0;
+
+        for(MemberLocation location : memberLocationList) {
+            double lat = location.getLatitude();
+            double lon = location.getLongitude();
+
+            // 첫 번째 위치인 경우 이전 위치를 현재 위치로 설정하고 건너뜀
+            if (prevLat == 0.0 && prevLon == 0.0) {
+                prevLat = lat;
+                prevLon = lon;
+                continue;
+            }
+
+            totalDistance += geoUtils.calculateDistance(prevLat, prevLon, lat, lon);
+
+            // 현재 위치를 이전 위치로 설정
+            prevLat = lat;
+            prevLon = lon;
+        }
+
+//        km로 계산
+        return totalDistance/1000;
     }
 
 
