@@ -5,6 +5,7 @@ import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.repository.*;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -28,16 +29,17 @@ public class StampService {
         Record record = recordRepository.findById(recordId).get();
         Long mountainId = record.getMountain().getId();
 
-        List<Stamp> stampList = stampRepository.findAllByMountainIdOrderByIdDesc(mountainId);
+        List<Stamp> stampList = stampRepository.findAllByMountainIdOrderByIdAsc(mountainId);
 
         List<MemberStamp> memberStampList =
-                memberStampRepository.getMemberStampByMemberAndMountain(memberId, mountainId);
+                memberStampRepository.getMemberStampByMemberIdAndMountainId(memberId, mountainId);
         Integer index = memberStampList.size();
+        log.error(String.valueOf(index));
         Stamp stamp = stampList.get(index);
 
         Member member = memberRepository.findById(memberId).get();
 
-        MemberStamp memberStamp = MemberStamp.builder().member(member).record(record).stamp(stamp).build();
+        MemberStamp memberStamp = MemberStamp.builder().member(member).record(record).mountain(record.getMountain()).stamp(stamp).build();
 
         memberStampRepository.save(memberStamp);
     }
