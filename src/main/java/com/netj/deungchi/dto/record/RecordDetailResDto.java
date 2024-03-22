@@ -2,6 +2,7 @@ package com.netj.deungchi.dto.record;
 
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.image.ImageUrlListResDto;
+import com.netj.deungchi.dto.stamp.StampResDto;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +26,7 @@ public class RecordDetailResDto {
     private String content;
     private Boolean isShare;
     private List<ImageUrlListResDto> imageList;
+    private StampResDto stamp;
     private Date createdAt;
 
     @Builder

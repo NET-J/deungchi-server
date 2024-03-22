@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface StampRepository extends JpaRepository<Stamp, Long> {
     List<Stamp> findAllByMountainIdOrderByIdAsc(Long mountainId);
-
 }

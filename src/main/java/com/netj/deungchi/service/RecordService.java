@@ -7,6 +7,7 @@ import com.netj.deungchi.dto.image.ImageUrlListResDto;
 import com.netj.deungchi.dto.mountain.MountainStartLocationResDto;
 import com.netj.deungchi.dto.record.*;
 import com.netj.deungchi.dto.ResponseDto;
+import com.netj.deungchi.dto.stamp.StampResDto;
 import com.netj.deungchi.repository.*;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class RecordService {
 
     public final RecordRepository recordRepository;
     private final MemberRepository memberRepository;
+    private final MemberStampRepository memberStampRepository;
     private final MountainRepository mountainRepository;
     private final CourseRepository courseRepository;
     private final CourseDetailRepository courseDetailRepository;
@@ -44,8 +46,13 @@ public class RecordService {
 
         List<ImageUrlListResDto> imageUrlListResDtoList = imageList.stream().map(ImageUrlListResDto::new).toList();
 
+        MemberStamp memberStamp = memberStampRepository.findByMemberIdAndRecordId(record.get().getMember().getId(), record.get().getId());
+
+        StampResDto stampResDto = new StampResDto(memberStamp.getStamp());
+
         RecordDetailResDto recordDetailResDto = RecordDetailResDto.builder().record(record.get()).build();
         recordDetailResDto.setImageList(imageUrlListResDtoList);
+        recordDetailResDto.setStamp(stampResDto);
 
         return ResponseDto.success(recordDetailResDto);
     }
