@@ -130,7 +130,7 @@ public class RecordService {
             Record record= Record.builder().mountain(mountain.get()).member(member.get()).build();
             recordRepository.save(record);
 
-            return ResponseDto.success("등산하는 곳이 설정되었습니다.");
+            return ResponseDto.success(record);
         }
 
     }

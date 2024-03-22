@@ -35,6 +35,7 @@ public class Mountain {
     private Double latitude;
     private Double longitude;
     private String featured_image;
+    private Boolean isShow;
 
     @CreationTimestamp
     Timestamp createdAt;

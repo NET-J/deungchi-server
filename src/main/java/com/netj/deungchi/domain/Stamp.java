@@ -16,10 +16,11 @@ public class Stamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    private Mountain mountain;
+
     @Column(nullable = false)
     private String name;
-
-
 
     @Column
     private String featured_image;

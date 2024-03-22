@@ -1,7 +1,6 @@
 package com.netj.deungchi.repository;
 
 import com.netj.deungchi.domain.Badge;
-import com.netj.deungchi.domain.Record;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -36,6 +35,8 @@ public interface BadgeRepository extends JpaRepository<Badge, Long> {
             "   where member_id = ?1" +
             ") order by b.id desc", nativeQuery = true)
     List<Badge> getNotMemberBadge(Long memberId);
+
+    List<Badge> findAllByMountainIdOrderByIdAsc(Long mountainId);
 
 
 }

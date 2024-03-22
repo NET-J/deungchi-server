@@ -1,6 +1,5 @@
 package com.netj.deungchi.domain;
 
-import com.netj.deungchi.service.MemberService;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,18 +18,25 @@ public class MemberStamp {
     private Long id;
 
     @OneToOne
-    @JoinColumn(referencedColumnName = "id", name = "member_id")
     Member member;
 
     @OneToOne
-    @JoinColumn(referencedColumnName = "id", name = "record_id")
+    Mountain mountain;
+
+    @OneToOne
     Record record;
 
     @OneToOne
-    @JoinColumn(referencedColumnName = "id", name = "stamp_id")
     Stamp stamp;
 
     @CreationTimestamp
-    @Column(name = "created_at")
-    Timestamp created_at;
+    Timestamp createdAt;
+
+    @Builder
+    public MemberStamp(Member member, Mountain mountain,Record record, Stamp stamp) {
+        this.member = member;
+        this.mountain = mountain;
+        this.record = record;
+        this.stamp = stamp;
+    }
 }

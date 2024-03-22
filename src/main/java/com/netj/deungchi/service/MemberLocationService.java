@@ -7,7 +7,6 @@ import com.netj.deungchi.dto.memberLocation.MemberLocationReqDto;
 import com.netj.deungchi.repository.*;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +23,7 @@ public class MemberLocationService {
     public final GeoUtils geoUtils;
     public final CourseDetailRepository courseDetailRepository;
     private final EntityManager em;
+    private final StampService stampService;
 
     public ResponseDto<?> postMemberLocation(Long memberId, MemberLocationReqDto memberLocationReqDto) {
         Optional<Member> member = memberRepository.findById(memberId);
@@ -41,6 +41,7 @@ public class MemberLocationService {
             memberLocationRepository.save(memberLocation);
 
             if(distance < 50) {
+                stampService.postMemberStamp(memberId, record.get().getId());
                 return ResponseDto.fail(201, "End Record", "목적지에 도착했습니다.");
             }
         }
