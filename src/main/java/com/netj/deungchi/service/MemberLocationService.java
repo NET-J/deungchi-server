@@ -46,7 +46,7 @@ public class MemberLocationService {
 
             if(distanceByEndLocation < 50) {
                 stampService.postMemberStamp(memberId, record.get().getId());
-                return ResponseDto.fail(201, "End Record", "목적지에 도착했습니다.");
+                return ResponseDto.fail(201, "End Record", Collections.singletonMap("hikingLength", totalDistance));
             }
         }
 
