@@ -2,7 +2,6 @@ package com.netj.deungchi.repository;
 
 import com.netj.deungchi.domain.MemberStamp;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -16,4 +15,6 @@ public interface MemberStampRepository extends JpaRepository<MemberStamp, Long> 
 //    List<MemberStamp> getMemberStampByMountainId(Long memberId, Long mountainId);
 
     List<MemberStamp> getMemberStampByMemberIdAndMountainId(Long memberId, Long mountainId);
+
+    MemberStamp findByMemberIdAndRecordId(Long memberId, Long recordId);
 }
