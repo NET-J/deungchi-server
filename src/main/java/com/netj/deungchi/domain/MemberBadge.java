@@ -24,6 +24,10 @@ public class MemberBadge {
     Member member;
 
     @OneToOne
+    @JoinColumn(referencedColumnName = "id", name = "mountain_id")
+    Mountain mountain;
+
+    @OneToOne
     @JoinColumn(referencedColumnName = "id", name = "record_id")
     Record record;
 
@@ -31,4 +35,15 @@ public class MemberBadge {
     @JsonIgnore
     @JoinColumn(referencedColumnName = "id", name = "badge_id")
     Badge badge;
+
+    @CreationTimestamp
+    Timestamp createdAt;
+
+    @Builder
+    public MemberBadge(Member member, Mountain mountain,Record record, Badge badge) {
+        this.member = member;
+        this.mountain = mountain;
+        this.record = record;
+        this.badge = badge;
+    }
 }

@@ -3,9 +3,7 @@ package com.netj.deungchi.service;
 import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.repository.*;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +17,8 @@ public class StampService {
     public final RecordRepository recordRepository;
     public final StampRepository stampRepository;
     public final MemberRepository memberRepository;
-    public final MemberLocationRepository memberLocationRepository;
     private final MemberStampRepository memberStampRepository;
-    public final GeoUtils geoUtils;
-    public final CourseDetailRepository courseDetailRepository;
-    private final EntityManager em;
+    private final BadgeService badgeService;
 
     public void postMemberStamp(Long memberId, Long recordId) {
         Record record = recordRepository.findById(recordId).get();
@@ -34,7 +29,7 @@ public class StampService {
         List<MemberStamp> memberStampList =
                 memberStampRepository.getMemberStampByMemberIdAndMountainId(memberId, mountainId);
         Integer index = memberStampList.size();
-        log.error(String.valueOf(index));
+
         Stamp stamp = stampList.get(index);
 
         Member member = memberRepository.findById(memberId).get();
@@ -42,6 +37,10 @@ public class StampService {
         MemberStamp memberStamp = MemberStamp.builder().member(member).record(record).mountain(record.getMountain()).stamp(stamp).build();
 
         memberStampRepository.save(memberStamp);
+
+        if(index > 0 && (index % 5) == 0) { // 5의 배수인 경우에만 호출
+            badgeService.postMemberBadge(memberId, recordId);
+        }
     }
 
 }
