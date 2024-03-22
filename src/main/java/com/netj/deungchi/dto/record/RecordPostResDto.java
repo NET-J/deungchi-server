@@ -23,7 +23,8 @@ public class RecordPostResDto {
         return RecordPostResDto.builder()
                 .id(record.getId())
                 .mountainName(mountainName)
-                .hikingDuration(record.getHikingDuration()).hikingLength(record.getHikingLength())
+                .hikingDuration(record.getHikingDuration())
+                .hikingLength(record.getHikingLength())
                 .createdAt(record.getCreatedAt())
                 .build();
     }

@@ -57,15 +57,18 @@ public class RecordService {
         return ResponseDto.success(records);
     }
 
-    public ResponseDto<?> postRecord(RecordPostReqDto recordPostReqDto, Long memberId, List<ImagePostDto> imagePostDtoList) {
-        Optional<Member> member = memberRepository.findById(memberId);
-        Optional<Mountain> mountain = mountainRepository.findById(recordPostReqDto.getMountainId());
-        Optional<Course> course = courseRepository.findById(recordPostReqDto.getCourseId());
+    public ResponseDto<?> endRecord(Long recordId, RecordPostReqDto recordPostReqDto, List<ImagePostDto> imagePostDtoList) {
+        Record record = em.find(Record.class, recordId);
 
-        if(member.isPresent()) {
-            Record record = recordPostReqDto.toRecordEntity(member.get(), mountain.get(), course.get());
-            recordRepository.save(record);
+        record.setContent(recordPostReqDto.getContent());
+        record.setLevel(recordPostReqDto.getLevel());
+        record.setIsShare(recordPostReqDto.getIsShare());
+        record.setTemperature(recordPostReqDto.getTemperature());
+        record.setWeatherCode(recordPostReqDto.getWeatherCode());
 
+        recordRepository.save(record);
+
+        if (imagePostDtoList != null) {
             for (ImagePostDto imagePostDto : imagePostDtoList) {
                 Image img = Image.builder()
                         .url(imagePostDto.getUrl())
@@ -77,15 +80,12 @@ public class RecordService {
 
                 imageRepository.save(img);
             }
-
-            return ResponseDto.success(RecordPostResDto.of(record));
-        } else {
-            log.info("유저가 존재하지 않습니다.");
-            return ResponseDto.fail(404, "Member not found", "유저가 존재하지 않습니다.");
         }
+
+        return ResponseDto.success(RecordPostResDto.of(record));
     }
 
-    public ResponseDto<?> updateRecord(Long recordId, RecordUpdateReqDto recordUpdateReqDto, List<ImagePostDto> imagePostDtoList) {
+    public ResponseDto<?> updateRecordDetail(Long recordId, RecordUpdateReqDto recordUpdateReqDto, List<ImagePostDto> imagePostDtoList) {
 
         Record record = em.find(Record.class, recordId);
 
@@ -93,20 +93,25 @@ public class RecordService {
         record.setLevel(recordUpdateReqDto.getLevel());
         record.setIsShare(recordUpdateReqDto.getIsShare());
 
-        for (ImagePostDto imagePostDto : imagePostDtoList) {
-            Image img = Image.builder()
-                    .url(imagePostDto.getUrl())
-                    .name(imagePostDto.getName())
-                    .size(imagePostDto.getSize())
-                    .tableName(record.getClass().getSimpleName())
-                    .tableId(record.getId())
-                    .build();
+        recordRepository.save(record);
 
-            imageRepository.save(img);
+        if (imagePostDtoList != null) {
+            for (ImagePostDto imagePostDto : imagePostDtoList) {
+                Image img = Image.builder()
+                        .url(imagePostDto.getUrl())
+                        .name(imagePostDto.getName())
+                        .size(imagePostDto.getSize())
+                        .tableName(record.getClass().getSimpleName())
+                        .tableId(record.getId())
+                        .build();
+
+                imageRepository.save(img);
+            }
         }
 
         return ResponseDto.success("수정되었습니다.");
     }
+
     @Transactional
     public void deleteRecordImage(Long recordId) {
         // 기존 이미지 삭제
