@@ -1,9 +1,6 @@
 package com.netj.deungchi.repository;
 
 import com.netj.deungchi.domain.MemberStamp;
-import com.netj.deungchi.domain.Stamp;
-import com.netj.deungchi.domain.Term;
-import lombok.extern.java.Log;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,4 +14,6 @@ public interface MemberStampRepository extends JpaRepository<MemberStamp, Long> 
             "inner join stamp as s on ms.stamp_id = s.id " +
             "where ms.member_id = ?1 and r.mountain_id = ?2", nativeQuery = true)
     List<MemberStamp> getMemberStampByMountainId(Long memberId, Long mountainId);
+
+    List<MemberStamp> getMemberStampByMemberAndMountain(Long memberId, Long mountainId);
 }
