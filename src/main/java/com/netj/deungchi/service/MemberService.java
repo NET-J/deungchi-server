@@ -15,12 +15,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.groupingBy;
 
 @Service
 @RequiredArgsConstructor
@@ -174,7 +175,6 @@ public class MemberService {
     public ResponseDto<?> getMemberBadge(Long memberId){
 //        Member member = memberRepository.findById(memberId).get();
 
-//        List<Record> records = recordRepository.getMemberRecord(memberId);
         List<Badge> collectBadges = badgeRepository.getMemberBadge(memberId);
         List<Badge> notCollectBadges = badgeRepository.getNotMemberBadge(memberId);
 
@@ -198,4 +198,29 @@ public class MemberService {
     }
 
 
+    public ResponseDto<?> getMemberRecord(Long memberId, String sortBy){
+
+        List<Record> records = recordRepository.getMemberRecord(memberId);
+
+        Map<String, List<Record>> recordMonthly;
+        if (!records.isEmpty()) {
+            recordMonthly = records.stream().collect(groupingBy(item -> item.getCreatedAt().toString().substring(0, 10)));
+            if (sortBy.isEmpty() || !sortBy.equals("asc") ) {
+                List<String> keySet = new ArrayList<>(recordMonthly.keySet());
+                Map<String, List<Record>> recordMonthlySort = new LinkedHashMap<>();
+
+                // 키 값으로 오름차순 정렬
+                Collections.reverse(keySet);
+
+                for (String key : keySet) {
+                    recordMonthlySort.put(key, recordMonthly.get(key));
+                }
+                recordMonthly = recordMonthlySort;
+            }
+        } else {
+            recordMonthly = new HashMap<>();
+        }
+
+        return ResponseDto.success(recordMonthly);
+    }
 }
