@@ -58,7 +58,7 @@ public class RecordController {
     @PutMapping("/{recordId}/detail")
     public ResponseDto<?> updateRecordDetail(@PathVariable Long recordId, @RequestPart RecordUpdateReqDto recordUpdateReqDto)  {
 
-        return recordService.updateRecord(recordId, recordUpdateReqDto);
+        return recordService.updateRecordDetail(recordId, recordUpdateReqDto);
     }
 
     @PostMapping("/{recordId}/images")
