@@ -2,6 +2,7 @@ package com.netj.deungchi.service;
 
 import com.netj.deungchi.domain.Member;
 import com.netj.deungchi.dto.ResponseDto;
+import com.netj.deungchi.dto.auth.AppleLoginDto;
 import com.netj.deungchi.dto.auth.KakaoLoginDto;
 import com.netj.deungchi.provider.jwt.JwtProvider;
 import com.netj.deungchi.repository.MemberRepository;
@@ -59,13 +60,43 @@ public class AuthService {
         result.put("accessToken", accessToken);
         result.put("member", member);
 
-//        String token = Jwts.builder().setHeaderParam(Header.TYPE, Header.JWT_TYPE) // (1)
-//                .setIssuer("fresh") // (2)
-//                .setIssuedAt(now) // (3)
-//                .setExpiration(new Date(now.getTime() + Duration.ofMinutes(30).toMillis())) // (4)
-//                .claim("id", member.get().getId()) // (5)
-//                .signWith(SignatureAlgorithm.HS256, "deungchi-jwt-secret") // (6)
-//                .compact();
         return ResponseDto.success(result);
     }
+
+    public ResponseDto<?> appleLogin(AppleLoginDto appleLoginDto) {
+        Date now = new Date();
+        System.out.println(appleLoginDto.getId());
+        if (appleLoginDto.getId().isEmpty()) {
+            return ResponseDto.fail(400, "error", "param error");
+        }
+        Optional<Member> member = Optional.ofNullable(memberRepository.findByProviderId("apple", appleLoginDto.getId()));
+
+        if (!member.isEmpty() && member.get().getDeleted_at() != null) {
+            return ResponseDto.fail(400, "error", "leave member");
+        }
+
+        if (member.isEmpty()) {
+            Member newMember = Member.builder()
+                    .provider("apple")
+                    .provider_id(appleLoginDto.getId())
+                    .email(appleLoginDto.getEmail())
+                    .name(appleLoginDto.getName())
+                    .nickname(appleLoginDto.getName())
+                    .profile_image(appleLoginDto.getProfileImage())
+                    .build();
+            memberRepository.save(newMember);
+
+            member = Optional.of(newMember);
+        }
+
+        String accessToken = jwtProvider.getAccessToken(member.get().getId());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("accessToken", accessToken);
+        result.put("member", member);
+
+        return ResponseDto.success(result);
+    }
+
+
 }
