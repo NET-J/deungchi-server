@@ -41,8 +41,6 @@ public class StampService {
     }
 
     public void updateStampImage(Long memberId, Long recordId, String featuredImage) {
-        log.error("updateStampImage");
-        log.error(featuredImage);
         Long stampId = stampRepository.findByMemberIdAndRecordId(memberId, recordId).getId();
         Stamp stamp = em.find(Stamp.class, stampId);
 

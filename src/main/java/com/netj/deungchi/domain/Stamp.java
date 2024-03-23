@@ -1,6 +1,5 @@
 package com.netj.deungchi.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,11 +36,6 @@ public class Stamp {
 
     @UpdateTimestamp
     Timestamp updatedAt;
-
-    @OneToOne
-    @JsonIgnore
-    @JoinColumn(referencedColumnName = "stamp_id", name = "id")
-    MemberStamp memberStamp;
 
     @Builder
     public Stamp(Member member, Mountain mountain, Record record, String featuredImage) {
