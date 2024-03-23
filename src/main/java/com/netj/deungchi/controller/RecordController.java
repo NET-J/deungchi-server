@@ -56,12 +56,9 @@ public class RecordController {
     }
 
     @PostMapping("/{recordId}/images")
-    public ResponseDto<?> postRecordImages (@PathVariable Long recordId, @RequestPart (required = false) List<MultipartFile> imageList) throws Exception {
-        List<ImagePostDto> imagePostDtoList = null;
+    public ResponseDto<?> postRecordImages (@PathVariable Long recordId, @RequestPart (required = false) List<MultipartFile> imageList) {
 
-        if (imageList != null) {
-            imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
-        }
+        List<ImagePostDto> imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
 
         return recordService.postRecordImages(recordId, imagePostDtoList);
     }
