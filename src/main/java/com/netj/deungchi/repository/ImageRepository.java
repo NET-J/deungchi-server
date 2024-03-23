@@ -7,6 +7,4 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
     List<Image> findAllByTableNameAndTableId(String tableName, Long tableId);
-
-    void deleteAllByTableNameAndTableId(String tableName, Long tableId);
 }
