@@ -59,7 +59,10 @@ public class MountainService {
 
         List<Mountain> mountainsFindByLocation = mountainRepository.findByLocationLike("%" + keyword + "%");
 
-        List< MountainListResDto > resultByLocation = mountainsFindByLocation.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
+        Map<String, List<MountainListResDto>> resultByLocation = mountainsFindByLocation.stream()
+                .collect(Collectors.groupingBy(Mountain::getLocation,
+                        Collectors.mapping(mountain -> new MountainListResDto(mountain, bookmarkRepository, memberId),
+                                Collectors.toList())));
 
         Map<String, Object> result = new HashMap<>();
         result.put("name", resultByName);
