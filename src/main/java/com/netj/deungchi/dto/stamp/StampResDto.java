@@ -17,8 +17,7 @@ public class StampResDto {
     @Builder
     public StampResDto(Stamp stamp){
         this.id = stamp.getId();
-        this.name = stamp.getName();
-        this.featureImage = stamp.getFeatured_image();
+        this.featureImage = stamp.getFeaturedImage();
     }
 
 }
