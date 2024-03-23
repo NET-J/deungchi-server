@@ -99,8 +99,15 @@ public class RecordService {
                 }
 
                 imageRepository.deleteAllByIdInBatch(deleteImgLong);
-            }
 
+                List<Image> imageList = imageRepository.findAllByTableNameAndTableId("Record", recordId);
+
+                if (!imageList.isEmpty()) {
+                    stampService.updateStampImage(record.getMember().getId(),record.getId(), String.valueOf(imageList.get(0).getUrl()));
+                } else {
+                    stampService.updateStampImage(record.getMember().getId(),record.getId(), null);
+                }
+            }
 
         return ResponseDto.success("수정되었습니다.");
     }

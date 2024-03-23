@@ -41,10 +41,14 @@ public class StampService {
     }
 
     public void updateStampImage(Long memberId, Long recordId, String featuredImage) {
+        log.error("updateStampImage");
+        log.error(featuredImage);
         Long stampId = stampRepository.findByMemberIdAndRecordId(memberId, recordId).getId();
         Stamp stamp = em.find(Stamp.class, stampId);
 
-        stamp.setFeaturedImage(featuredImage);
+        // featuredImage가 null이면 기본 이미지를 사용하도록 설정
+        stamp.setFeaturedImage(featuredImage != null ? featuredImage : DEFAULT_IMAGE);
+
         stampRepository.save(stamp);
     }
 
