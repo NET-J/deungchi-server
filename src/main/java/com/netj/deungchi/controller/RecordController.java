@@ -44,15 +44,9 @@ public class RecordController {
     }
 
     @PutMapping("/{recordId}/end")
-    public ResponseDto<?> endRecord(@PathVariable Long recordId, @RequestPart RecordPostReqDto recordPostReqDto, @RequestPart (required = false) List<MultipartFile> imageList) {
+    public ResponseDto<?> endRecord(@PathVariable Long recordId, @RequestPart RecordPostReqDto recordPostReqDto) {
 
-        List<ImagePostDto> imagePostDtoList = null;
-
-        if (imageList != null) {
-            imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
-        }
-
-        return recordService.endRecord(recordId, recordPostReqDto, imagePostDtoList);
+        return recordService.endRecord(recordId, recordPostReqDto);
     }
 
     @PutMapping("/{recordId}/detail")
@@ -63,7 +57,11 @@ public class RecordController {
 
     @PostMapping("/{recordId}/images")
     public ResponseDto<?> postRecordImages (@PathVariable Long recordId, @RequestPart (required = false) List<MultipartFile> imageList) throws Exception {
-        List<ImagePostDto> imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
+        List<ImagePostDto> imagePostDtoList = null;
+
+        if (imageList != null) {
+            imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
+        }
 
         return recordService.postRecordImages(recordId, imagePostDtoList);
     }

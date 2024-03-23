@@ -49,7 +49,10 @@ public class RecordService {
 
         MemberStamp memberStamp = memberStampRepository.findByMemberIdAndRecordId(record.get().getMember().getId(), record.get().getId());
 
-        StampResDto stampResDto = new StampResDto(memberStamp.getStamp());
+        StampResDto stampResDto = null;
+        if (memberStamp != null) {
+            stampResDto = new StampResDto(memberStamp.getStamp());
+        }
 
         RecordDetailResDto recordDetailResDto = RecordDetailResDto.builder().record(record.get()).build();
         recordDetailResDto.setImageList(imageUrlListResDtoList);
@@ -71,7 +74,7 @@ public class RecordService {
         return ResponseDto.success(records);
     }
 
-    public ResponseDto<?> endRecord(Long recordId, RecordPostReqDto recordPostReqDto, List<ImagePostDto> imagePostDtoList) {
+    public ResponseDto<?> endRecord(Long recordId, RecordPostReqDto recordPostReqDto) {
         Record record = em.find(Record.class, recordId);
 
         record.setContent(recordPostReqDto.getContent());
@@ -82,24 +85,9 @@ public class RecordService {
 
         recordRepository.save(record);
 
-        if (imagePostDtoList != null) {
-            for (ImagePostDto imagePostDto : imagePostDtoList) {
-                Image img = Image.builder()
-                        .url(imagePostDto.getUrl())
-                        .name(imagePostDto.getName())
-                        .size(imagePostDto.getSize())
-                        .tableName(record.getClass().getSimpleName())
-                        .tableId(record.getId())
-                        .build();
-
-                imageRepository.save(img);
-            }
-        }
-
         return ResponseDto.success(RecordPostResDto.of(record));
     }
 
-//    public ResponseDto<?> updateRecord(Long recordId, RecordUpdateReqDto recordUpdateReqDto, List<ImagePostDto> imagePostDtoList) {
         public ResponseDto<?> updateRecordDetail(Long recordId, RecordUpdateReqDto recordUpdateReqDto) {
 
         Record record = recordRepository.findById(recordId).get();
@@ -108,18 +96,6 @@ public class RecordService {
         record.setLevel(recordUpdateReqDto.getLevel());
         record.setIsShare(recordUpdateReqDto.getIsShare());
         recordRepository.save(record);
-
-//        for (ImagePostDto imagePostDto : imagePostDtoList) {
-//            Image img = Image.builder()
-//                    .url(imagePostDto.getUrl())
-//                    .name(imagePostDto.getName())
-//                    .size(imagePostDto.getSize())
-//                    .tableName(record.getClass().getSimpleName())
-//                    .tableId(record.getId())
-//                    .build();
-//
-//            imageRepository.save(img);
-//        }
 
             if (recordUpdateReqDto.getDeleteImages() != null && !recordUpdateReqDto.getDeleteImages().isEmpty())
             {
@@ -158,12 +134,6 @@ public class RecordService {
         return ResponseDto.success(true);
     }
 
-    @Transactional
-    public void deleteRecordImage(Long recordId) {
-        // 기존 이미지 삭제
-        imageRepository.deleteAllByTableNameAndTableId("Record", recordId);
-    }
-
     public ResponseDto<?> getStartLocationBySearch(String keyword) {
         List<Mountain> mountainsFindByName = mountainRepository.findByNameLike("%" + keyword + "%");
 
@@ -193,9 +163,6 @@ public class RecordService {
             return ResponseDto.fail(404, "Record not found", "등산하는 곳이 설정되지 않습니다.");
         } else {
             List<Course> courseList = courseRepository.findAllByMountainId(record.get().getMountain().getId());
-
-            log.info("courseList");
-
 
             List<CourseDetail> courseDetailList = new ArrayList<>();
 
@@ -234,6 +201,7 @@ public class RecordService {
             Record record = em.find(Record.class, recordId);
 
             record.setCourse(course.get());
+            record.setCourseDetail(courseDetail.get());
             record.setEndLocation(courseDetail.get().getName());
 
             log.info(courseDetail.get().getName());
