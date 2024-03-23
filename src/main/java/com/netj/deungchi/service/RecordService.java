@@ -25,14 +25,13 @@ public class RecordService {
 
     public final RecordRepository recordRepository;
     private final MemberRepository memberRepository;
-    private final MemberStampRepository memberStampRepository;
     private final MountainRepository mountainRepository;
     private final CourseRepository courseRepository;
     private final CourseDetailRepository courseDetailRepository;
     private final ImageRepository imageRepository;
     private final EntityManager em;
-    private final BadgeRepository badgeRepository;
     private final StampService stampService;
+    private final StampRepository stampRepository;
 
     public ResponseDto<?> getRecord(Long recordId) {
 
@@ -47,22 +46,15 @@ public class RecordService {
 
         List<ImageUrlListResDto> imageUrlListResDtoList = imageList.stream().map(ImageUrlListResDto::new).toList();
 
-        MemberStamp memberStamp = memberStampRepository.findByMemberIdAndRecordId(record.get().getMember().getId(), record.get().getId());
-
+        Stamp stamp = stampRepository.findByMemberIdAndRecordId(record.get().getMember().getId(), record.get().getId());
         StampResDto stampResDto = null;
-        if (memberStamp != null) {
-            stampResDto = new StampResDto(memberStamp.getStamp());
+        if (stamp != null) {
+            stampResDto = new StampResDto(stamp);
         }
 
         RecordDetailResDto recordDetailResDto = RecordDetailResDto.builder().record(record.get()).build();
         recordDetailResDto.setImageList(imageUrlListResDtoList);
         recordDetailResDto.setStamp(stampResDto);
-
-        List<Badge> badges = badgeRepository.getMemberBadgeByRecordId(recordDetailResDto.getId());
-        recordDetailResDto.setBadges(badges);
-
-//        Optional<Course> course = courseRepository.findById(recordDetailResDto.getCourse().getId());
-//        recordDetailResDto.setCourse(recordDetailResDto.getCourse());
 
         return ResponseDto.success(recordDetailResDto);
     }
@@ -119,7 +111,6 @@ public class RecordService {
         if (record == null) {
             return ResponseDto.fail(404, "Record not found", "기록이 존재하지 않습니다.");
         }
-
 
         recordRepository.save(record);
 
