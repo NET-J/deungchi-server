@@ -10,4 +10,5 @@ public class RecordUpdateReqDto {
     private String level;
     private String content;
     private Boolean isShare;
+    private String deleteImages;
 }

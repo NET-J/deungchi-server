@@ -77,4 +77,10 @@ public class MemberController {
         Long memberId = jwtProvider.getIdFromRequest(request);
         return memberService.getMemberBadgeDetail(memberId, badgeId);
     }
+
+    @GetMapping("/record")
+    public ResponseDto<?> getMemberRecord(HttpServletRequest request, @RequestParam(required = false) String sortBy) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return memberService.getMemberRecord(memberId, sortBy);
+    }
 }

@@ -56,16 +56,16 @@ public class RecordController {
     }
 
     @PutMapping("/{recordId}/detail")
-    public ResponseDto<?> updateRecordDetail(@PathVariable Long recordId, @RequestPart RecordUpdateReqDto recordUpdateReqDto, @RequestPart (required = false) List<MultipartFile> imageList)  {
+    public ResponseDto<?> updateRecordDetail(@PathVariable Long recordId, @RequestPart RecordUpdateReqDto recordUpdateReqDto)  {
 
-        recordService.deleteRecordImage(recordId);
-        List<ImagePostDto> imagePostDtoList = null;
+        return recordService.updateRecordDetail(recordId, recordUpdateReqDto);
+    }
 
-        if (imageList != null) {
-            imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
-        }
+    @PostMapping("/{recordId}/images")
+    public ResponseDto<?> postRecordImages (@PathVariable Long recordId, @RequestPart (required = false) List<MultipartFile> imageList) throws Exception {
+        List<ImagePostDto> imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
 
-        return recordService.updateRecordDetail(recordId, recordUpdateReqDto, imagePostDtoList);
+        return recordService.postRecordImages(recordId, imagePostDtoList);
     }
 
     @GetMapping("/startLocation/map")

@@ -1,7 +1,13 @@
 package com.netj.deungchi.dto.record;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.netj.deungchi.domain.Badge;
+import com.netj.deungchi.domain.Course;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.image.ImageUrlListResDto;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import com.netj.deungchi.dto.stamp.StampResDto;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +23,7 @@ import java.util.List;
 public class RecordDetailResDto {
 
     private Long id;
+    private Long course_id;
     private String mountainName;
     private String endLocation;
     private String level;
@@ -28,6 +35,8 @@ public class RecordDetailResDto {
     private List<ImageUrlListResDto> imageList;
     private StampResDto stamp;
     private Date createdAt;
+    private List<Badge> badges;
+    private Course course;
 
     @Builder
     public RecordDetailResDto(Record record){
@@ -41,5 +50,6 @@ public class RecordDetailResDto {
         this.content = record.getContent();
         this.isShare = record.getIsShare();
         this.createdAt = record.getCreatedAt();
+        this.course = record.getCourse();
     }
 }
