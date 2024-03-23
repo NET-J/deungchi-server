@@ -78,7 +78,11 @@ public class S3Uploader {
     }
 
     public List<ImagePostDto> getimagePostDtoList(List<MultipartFile> multipartFile) {
+
         List<ImagePostDto> imagePostDtoList = new ArrayList<>();
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            return imagePostDtoList;
+        }
 
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
         for (MultipartFile file : multipartFile) {

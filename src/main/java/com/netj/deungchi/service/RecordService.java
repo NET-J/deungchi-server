@@ -30,6 +30,7 @@ public class RecordService {
     private final CourseDetailRepository courseDetailRepository;
     private final ImageRepository imageRepository;
     private final EntityManager em;
+    private final BadgeRepository badgeRepository;
 
     public ResponseDto<?> getRecord(Long recordId) {
 
@@ -46,6 +47,12 @@ public class RecordService {
 
         RecordDetailResDto recordDetailResDto = RecordDetailResDto.builder().record(record.get()).build();
         recordDetailResDto.setImageList(imageUrlListResDtoList);
+
+        List<Badge> badges = badgeRepository.getMemberBadgeByRecordId(recordDetailResDto.getId());
+        recordDetailResDto.setBadges(badges);
+
+//        Optional<Course> course = courseRepository.findById(recordDetailResDto.getCourse().getId());
+//        recordDetailResDto.setCourse(recordDetailResDto.getCourse());
 
         return ResponseDto.success(recordDetailResDto);
     }
@@ -85,13 +92,46 @@ public class RecordService {
         }
     }
 
-    public ResponseDto<?> updateRecord(Long recordId, RecordUpdateReqDto recordUpdateReqDto, List<ImagePostDto> imagePostDtoList) {
+//    public ResponseDto<?> updateRecord(Long recordId, RecordUpdateReqDto recordUpdateReqDto, List<ImagePostDto> imagePostDtoList) {
+        public ResponseDto<?> updateRecord(Long recordId, RecordUpdateReqDto recordUpdateReqDto) {
 
-        Record record = em.find(Record.class, recordId);
+        Record record = recordRepository.findById(recordId).get();
 
         record.setContent(recordUpdateReqDto.getContent());
         record.setLevel(recordUpdateReqDto.getLevel());
         record.setIsShare(recordUpdateReqDto.getIsShare());
+        recordRepository.save(record);
+
+//        for (ImagePostDto imagePostDto : imagePostDtoList) {
+//            Image img = Image.builder()
+//                    .url(imagePostDto.getUrl())
+//                    .name(imagePostDto.getName())
+//                    .size(imagePostDto.getSize())
+//                    .tableName(record.getClass().getSimpleName())
+//                    .tableId(record.getId())
+//                    .build();
+//
+//            imageRepository.save(img);
+//        }
+
+            if (recordUpdateReqDto.getDeleteImages() != null && !recordUpdateReqDto.getDeleteImages().isEmpty())
+            {
+                List<Long> deleteImgLong = new ArrayList<>();
+
+                String[] deleteImgs = recordUpdateReqDto.getDeleteImages().split(",");
+                for (String deleteImg: deleteImgs) {
+                    deleteImgLong.add(Long.parseLong(deleteImg));
+                }
+
+                imageRepository.deleteAllByIdInBatch(deleteImgLong);
+            }
+
+
+        return ResponseDto.success("수정되었습니다.");
+    }
+
+    public ResponseDto<?> postRecordImages(Long recordId, List<ImagePostDto> imagePostDtoList) {
+        Record record = recordRepository.findById(recordId).get();
 
         for (ImagePostDto imagePostDto : imagePostDtoList) {
             Image img = Image.builder()
@@ -104,9 +144,9 @@ public class RecordService {
 
             imageRepository.save(img);
         }
-
-        return ResponseDto.success("수정되었습니다.");
+        return ResponseDto.success(true);
     }
+
     @Transactional
     public void deleteRecordImage(Long recordId) {
         // 기존 이미지 삭제

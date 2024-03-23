@@ -37,5 +37,9 @@ public interface BadgeRepository extends JpaRepository<Badge, Long> {
             ") order by b.id desc", nativeQuery = true)
     List<Badge> getNotMemberBadge(Long memberId);
 
-
+    @Query(value = "select b.* " +
+            "from badge as b " +
+            "inner join member_badge mb on b.id = mb.badge_id " +
+            "WHERE mb.record_id = ?1 order by b.id desc", nativeQuery = true)
+    List<Badge> getMemberBadgeByRecordId(Long recordId);
 }

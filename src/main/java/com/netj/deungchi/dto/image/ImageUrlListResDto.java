@@ -10,11 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class ImageUrlListResDto {
+    private Long id;
     private String name;
     private String url;
 
     @Builder
     public ImageUrlListResDto(Image image){
+        this.id = image.getId();
         this.name = image.getName();
         this.url = image.getUrl();
     }
