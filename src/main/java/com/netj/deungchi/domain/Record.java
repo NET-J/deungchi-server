@@ -53,6 +53,7 @@ public class Record {
     Double hikingLength;
 
     Integer temperature;
+    Integer weatherCode;
 
     Boolean isShare;
 
@@ -63,7 +64,7 @@ public class Record {
     Timestamp updatedAt;
 
     @Builder
-    public Record(Member member, Mountain mountain, Course course, CourseDetail courseDetail,String level, String content, Timestamp startAt, Timestamp endAt, String startLocation, String endLocation, String hikingDuration, Double hikingLength, Integer temperature, Boolean isShare) {
+    public Record(Member member, Mountain mountain, Course course, CourseDetail courseDetail,String level, String content, Timestamp startAt, Timestamp endAt, String startLocation, String endLocation, String hikingDuration, Double hikingLength, Integer temperature, Integer weatherCode, Boolean isShare) {
         this.member = member;
         this.mountain = mountain;
         this.course = course;
@@ -77,6 +78,7 @@ public class Record {
         this.hikingDuration = hikingDuration;
         this.hikingLength = hikingLength;
         this.temperature = temperature;
+        this.weatherCode = weatherCode;
         this.isShare = isShare;
     }
 }

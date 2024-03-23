@@ -188,7 +188,7 @@ public class MemberService {
     public ResponseDto<?> getMemberBadgeDetail(Long memberId, Long BadgeId){
 
         Badge badge = badgeRepository.getMemberBadgeBadgeId(memberId, BadgeId);
-        List<MemberStamp> memberStamps = memberStampRepository.getMemberStampByMountainId(memberId, Long.parseLong(String.valueOf(badge.getMountain().getId())));
+        List<MemberStamp> memberStamps = memberStampRepository.getMemberStampByMemberIdAndMountainId(memberId, Long.parseLong(String.valueOf(badge.getMountain().getId())));
 
         Map<String, Object> result = new HashMap<>();
         result.put("badge", badge);

@@ -34,7 +34,7 @@ public class MountainService {
 
     public ResponseDto<?> getMountainList(Long memberId) {
 
-        List<Mountain> mountains = mountainRepository.findAll();
+        List<Mountain> mountains = mountainRepository.findByIsShow(true);
 
         List< MountainListResDto > result = mountains.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
 

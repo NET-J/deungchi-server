@@ -43,21 +43,20 @@ public class RecordController {
         return recordService.getRecordList();
     }
 
-    @PostMapping
-    public ResponseDto<?> postRecord(HttpServletRequest request, @RequestPart RecordPostReqDto recordPostReqDto, @RequestPart (required = false) List<MultipartFile> imageList) throws Exception {
-        Long memberId = jwtProvider.getIdFromRequest(request);
+    @PutMapping("/{recordId}/end")
+    public ResponseDto<?> endRecord(@PathVariable Long recordId, @RequestPart RecordPostReqDto recordPostReqDto, @RequestPart (required = false) List<MultipartFile> imageList) {
 
-        List<ImagePostDto> imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
+        List<ImagePostDto> imagePostDtoList = null;
 
-        return recordService.postRecord(recordPostReqDto, memberId, imagePostDtoList);
+        if (imageList != null) {
+            imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
+        }
+
+        return recordService.endRecord(recordId, recordPostReqDto, imagePostDtoList);
     }
 
-    @PutMapping("/{recordId}")
-//    public ResponseDto<?> updateRecordDetail(@PathVariable Long recordId, @RequestPart RecordUpdateReqDto recordUpdateReqDto, @RequestPart (required = false) List<MultipartFile> imageList)  {
-        public ResponseDto<?> updateRecordDetail(@PathVariable Long recordId, @RequestBody RecordUpdateReqDto recordUpdateReqDto)  {
-
-//        recordService.deleteRecordImage(recordId);
-//        List<ImagePostDto> imagePostDtoList = s3Uploader.getimagePostDtoList(imageList);
+    @PutMapping("/{recordId}/detail")
+    public ResponseDto<?> updateRecordDetail(@PathVariable Long recordId, @RequestPart RecordUpdateReqDto recordUpdateReqDto)  {
 
         return recordService.updateRecord(recordId, recordUpdateReqDto);
     }

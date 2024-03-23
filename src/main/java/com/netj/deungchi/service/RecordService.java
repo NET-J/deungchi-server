@@ -7,6 +7,7 @@ import com.netj.deungchi.dto.image.ImageUrlListResDto;
 import com.netj.deungchi.dto.mountain.MountainStartLocationResDto;
 import com.netj.deungchi.dto.record.*;
 import com.netj.deungchi.dto.ResponseDto;
+import com.netj.deungchi.dto.stamp.StampResDto;
 import com.netj.deungchi.repository.*;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class RecordService {
 
     public final RecordRepository recordRepository;
     private final MemberRepository memberRepository;
+    private final MemberStampRepository memberStampRepository;
     private final MountainRepository mountainRepository;
     private final CourseRepository courseRepository;
     private final CourseDetailRepository courseDetailRepository;
@@ -45,8 +47,13 @@ public class RecordService {
 
         List<ImageUrlListResDto> imageUrlListResDtoList = imageList.stream().map(ImageUrlListResDto::new).toList();
 
+        MemberStamp memberStamp = memberStampRepository.findByMemberIdAndRecordId(record.get().getMember().getId(), record.get().getId());
+
+        StampResDto stampResDto = new StampResDto(memberStamp.getStamp());
+
         RecordDetailResDto recordDetailResDto = RecordDetailResDto.builder().record(record.get()).build();
         recordDetailResDto.setImageList(imageUrlListResDtoList);
+        recordDetailResDto.setStamp(stampResDto);
 
         List<Badge> badges = badgeRepository.getMemberBadgeByRecordId(recordDetailResDto.getId());
         recordDetailResDto.setBadges(badges);
@@ -64,15 +71,18 @@ public class RecordService {
         return ResponseDto.success(records);
     }
 
-    public ResponseDto<?> postRecord(RecordPostReqDto recordPostReqDto, Long memberId, List<ImagePostDto> imagePostDtoList) {
-        Optional<Member> member = memberRepository.findById(memberId);
-        Optional<Mountain> mountain = mountainRepository.findById(recordPostReqDto.getMountainId());
-        Optional<Course> course = courseRepository.findById(recordPostReqDto.getCourseId());
+    public ResponseDto<?> endRecord(Long recordId, RecordPostReqDto recordPostReqDto, List<ImagePostDto> imagePostDtoList) {
+        Record record = em.find(Record.class, recordId);
 
-        if(member.isPresent()) {
-            Record record = recordPostReqDto.toRecordEntity(member.get(), mountain.get(), course.get());
-            recordRepository.save(record);
+        record.setContent(recordPostReqDto.getContent());
+        record.setLevel(recordPostReqDto.getLevel());
+        record.setIsShare(recordPostReqDto.getIsShare());
+        record.setTemperature(recordPostReqDto.getTemperature());
+        record.setWeatherCode(recordPostReqDto.getWeatherCode());
 
+        recordRepository.save(record);
+
+        if (imagePostDtoList != null) {
             for (ImagePostDto imagePostDto : imagePostDtoList) {
                 Image img = Image.builder()
                         .url(imagePostDto.getUrl())
@@ -84,16 +94,13 @@ public class RecordService {
 
                 imageRepository.save(img);
             }
-
-            return ResponseDto.success(RecordPostResDto.of(record));
-        } else {
-            log.info("유저가 존재하지 않습니다.");
-            return ResponseDto.fail(404, "Member not found", "유저가 존재하지 않습니다.");
         }
+
+        return ResponseDto.success(RecordPostResDto.of(record));
     }
 
 //    public ResponseDto<?> updateRecord(Long recordId, RecordUpdateReqDto recordUpdateReqDto, List<ImagePostDto> imagePostDtoList) {
-        public ResponseDto<?> updateRecord(Long recordId, RecordUpdateReqDto recordUpdateReqDto) {
+        public ResponseDto<?> updateRecordDetail(Long recordId, RecordUpdateReqDto recordUpdateReqDto) {
 
         Record record = recordRepository.findById(recordId).get();
 
@@ -133,16 +140,20 @@ public class RecordService {
     public ResponseDto<?> postRecordImages(Long recordId, List<ImagePostDto> imagePostDtoList) {
         Record record = recordRepository.findById(recordId).get();
 
-        for (ImagePostDto imagePostDto : imagePostDtoList) {
-            Image img = Image.builder()
-                    .url(imagePostDto.getUrl())
-                    .name(imagePostDto.getName())
-                    .size(imagePostDto.getSize())
-                    .tableName(record.getClass().getSimpleName())
-                    .tableId(record.getId())
-                    .build();
+        recordRepository.save(record);
 
-            imageRepository.save(img);
+        if (imagePostDtoList != null) {
+            for (ImagePostDto imagePostDto : imagePostDtoList) {
+                Image img = Image.builder()
+                        .url(imagePostDto.getUrl())
+                        .name(imagePostDto.getName())
+                        .size(imagePostDto.getSize())
+                        .tableName(record.getClass().getSimpleName())
+                        .tableId(record.getId())
+                        .build();
+
+                imageRepository.save(img);
+            }
         }
         return ResponseDto.success(true);
     }
@@ -170,7 +181,7 @@ public class RecordService {
             Record record= Record.builder().mountain(mountain.get()).member(member.get()).build();
             recordRepository.save(record);
 
-            return ResponseDto.success("등산하는 곳이 설정되었습니다.");
+            return ResponseDto.success(record);
         }
 
     }
