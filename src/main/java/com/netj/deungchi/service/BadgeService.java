@@ -25,7 +25,7 @@ public class BadgeService {
 
         List<Badge> badgeList = badgeRepository.findAllByMountainIdOrderByIdAsc(mountainId);
         List<MemberBadge> memberBadgeList =
-                memberBadgeRepository.getMemberStampByMemberIdAndMountainId(memberId, mountainId);
+                memberBadgeRepository.getMemberBadgesByMemberIdAndMountainId(memberId, mountainId);
         Integer index = memberBadgeList.size();
 
         Badge badge = badgeList.get(index);

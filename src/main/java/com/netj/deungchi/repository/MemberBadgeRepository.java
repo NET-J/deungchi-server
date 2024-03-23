@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface MemberBadgeRepository extends JpaRepository<MemberBadge, Long> {
 
-    List<MemberBadge> getMemberStampByMemberIdAndMountainId(Long memberId, Long mountainId);
+    List<MemberBadge> getMemberBadgesByMemberIdAndMountainId(Long memberId, Long mountainId);
 }

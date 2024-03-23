@@ -15,12 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.groupingBy;
 
 @Service
@@ -35,7 +33,7 @@ public class MemberService {
     public final MemberRequestKeywordRepository memberRequestKeywordRepository;
     public final RecordRepository recordRepository;
     public final BadgeRepository badgeRepository;
-    public final MemberStampRepository memberStampRepository;
+    public final StampRepository stampRepository;
 
     @Autowired
     private final S3Uploader s3Uploader;
@@ -188,7 +186,7 @@ public class MemberService {
     public ResponseDto<?> getMemberBadgeDetail(Long memberId, Long BadgeId){
 
         Badge badge = badgeRepository.getMemberBadgeBadgeId(memberId, BadgeId);
-        List<MemberStamp> memberStamps = memberStampRepository.getMemberStampByMemberIdAndMountainId(memberId, Long.parseLong(String.valueOf(badge.getMountain().getId())));
+        List<Stamp> memberStamps = stampRepository.findAllByMemberIdAndMountainId(memberId, Long.parseLong(String.valueOf(badge.getMountain().getId())));
 
         Map<String, Object> result = new HashMap<>();
         result.put("badge", badge);
