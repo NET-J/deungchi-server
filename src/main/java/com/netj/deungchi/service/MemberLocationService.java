@@ -45,7 +45,7 @@ public class MemberLocationService {
             memberLocationRepository.save(memberLocation);
 
             if(distanceByEndLocation < 50) {
-                stampService.postMemberStamp(memberId, record.get().getId());
+                stampService.postStamp(memberId, record.get().getId());
                 return ResponseDto.fail(201, "End Record", Collections.singletonMap("hikingLength", totalDistance));
             }
         }

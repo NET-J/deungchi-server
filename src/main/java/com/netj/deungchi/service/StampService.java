@@ -3,6 +3,7 @@ package com.netj.deungchi.service;
 import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.repository.*;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,30 +18,34 @@ public class StampService {
     public final RecordRepository recordRepository;
     public final StampRepository stampRepository;
     public final MemberRepository memberRepository;
-    private final MemberStampRepository memberStampRepository;
+    private final EntityManager em;
     private final BadgeService badgeService;
+    private static final String DEFAULT_IMAGE = "https://deungchi-prd.s3.ap-northeast-2.amazonaws.com/stamp/default/Stamp_img.png";
 
-    public void postMemberStamp(Long memberId, Long recordId) {
+    public void postStamp(Long memberId, Long recordId) {
         Record record = recordRepository.findById(recordId).get();
+        Member member = memberRepository.findById(memberId).get();
         Long mountainId = record.getMountain().getId();
 
-        List<Stamp> stampList = stampRepository.findAllByMountainIdOrderByIdAsc(mountainId);
+        Stamp stamp = Stamp.builder().member(member).mountain(record.getMountain()).record(record).featuredImage(DEFAULT_IMAGE).build();
 
-        List<MemberStamp> memberStampList =
-                memberStampRepository.getMemberStampByMemberIdAndMountainId(memberId, mountainId);
-        Integer index = memberStampList.size();
+        stampRepository.save(stamp);
 
-        Stamp stamp = stampList.get(index);
+        List<Stamp> stampList =
+                stampRepository.findAllByMemberIdAndMountainId(memberId, mountainId);
+        Integer index = stampList.size();
 
-        Member member = memberRepository.findById(memberId).get();
-
-        MemberStamp memberStamp = MemberStamp.builder().member(member).record(record).mountain(record.getMountain()).stamp(stamp).build();
-
-        memberStampRepository.save(memberStamp);
-
-        if(index > 0 && (index % 5) == 0) { // 5의 배수인 경우에만 호출
+        if ((index - 1) % 6 == 0) { // 6으로 나눈 나머지가 0이 되는 경우 (1, 7, 13, ...)
             badgeService.postMemberBadge(memberId, recordId);
         }
+    }
+
+    public void updateStampImage(Long memberId, Long recordId, String featuredImage) {
+        Long stampId = stampRepository.findByMemberIdAndRecordId(memberId, recordId).getId();
+        Stamp stamp = em.find(Stamp.class, stampId);
+
+        stamp.setFeaturedImage(featuredImage);
+        stampRepository.save(stamp);
     }
 
 }

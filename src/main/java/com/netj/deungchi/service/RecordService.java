@@ -13,7 +13,6 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +32,7 @@ public class RecordService {
     private final ImageRepository imageRepository;
     private final EntityManager em;
     private final BadgeRepository badgeRepository;
+    private final StampService stampService;
 
     public ResponseDto<?> getRecord(Long recordId) {
 
@@ -88,7 +88,7 @@ public class RecordService {
         return ResponseDto.success(RecordPostResDto.of(record));
     }
 
-        public ResponseDto<?> updateRecordDetail(Long recordId, RecordUpdateReqDto recordUpdateReqDto) {
+    public ResponseDto<?> updateRecordDetail(Long recordId, RecordUpdateReqDto recordUpdateReqDto) {
 
         Record record = recordRepository.findById(recordId).get();
 
@@ -114,11 +114,17 @@ public class RecordService {
     }
 
     public ResponseDto<?> postRecordImages(Long recordId, List<ImagePostDto> imagePostDtoList) {
-        Record record = recordRepository.findById(recordId).get();
+        Record record = recordRepository.findById(recordId).orElse(null);
+
+        if (record == null) {
+            return ResponseDto.fail(404, "Record not found", "기록이 존재하지 않습니다.");
+        }
+
 
         recordRepository.save(record);
 
-        if (imagePostDtoList != null) {
+        if (imagePostDtoList != null && !imagePostDtoList.isEmpty()) {
+            String featuredImageUrl = imagePostDtoList.get(0).getUrl();
             for (ImagePostDto imagePostDto : imagePostDtoList) {
                 Image img = Image.builder()
                         .url(imagePostDto.getUrl())
@@ -130,6 +136,7 @@ public class RecordService {
 
                 imageRepository.save(img);
             }
+            stampService.updateStampImage(record.getMember().getId(), recordId, featuredImageUrl);
         }
         return ResponseDto.success(true);
     }
