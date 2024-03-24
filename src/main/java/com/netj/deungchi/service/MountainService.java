@@ -6,6 +6,7 @@ import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.course.CourseListResDto;
 import com.netj.deungchi.dto.mountain.MountainListResDto;
+import com.netj.deungchi.dto.record.MountainRecordListResDto;
 import com.netj.deungchi.dto.record.RecordListResDto;
 import com.netj.deungchi.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class MountainService {
     public final RecordRepository recordRepository;
     public final CourseRepository CourseRepository;
     public final ImageRepository imageRepository;
+    public final RecordLikeRepository recordLikeRepository;
 
     public ResponseDto<?> getMountainList(Long memberId) {
 
@@ -98,9 +100,9 @@ public class MountainService {
 
         List<Record> recordList = recordRepository.findRecordsByMountainId(mountainId);
 
-        List<RecordListResDto> recordListResDtoList = recordList.stream()
+        List<MountainRecordListResDto> recordListResDtoList = recordList.stream()
                 .limit(3)
-                .map(record -> new RecordListResDto(record, imageRepository))
+                .map(record -> new MountainRecordListResDto(record, imageRepository))
                 .toList();
 
 
@@ -123,7 +125,7 @@ public class MountainService {
         List<Record> recordList = recordRepository.findRecordsByMountainId(mountainId);
 
         List<RecordListResDto> recordListResDtoList = recordList.stream()
-                .map(record -> new RecordListResDto(record, imageRepository))
+                .map(record -> new RecordListResDto(record, imageRepository, recordLikeRepository))
                 .toList();
 
         return ResponseDto.success(recordListResDtoList);
