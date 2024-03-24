@@ -33,6 +33,7 @@ public class MountainService {
     public final CourseRepository CourseRepository;
     public final ImageRepository imageRepository;
     public final RecordLikeRepository recordLikeRepository;
+    public final RecordGoodRepository recordGoodRepository;
 
     public ResponseDto<?> getMountainList(Long memberId) {
 
@@ -125,7 +126,7 @@ public class MountainService {
         List<Record> recordList = recordRepository.findRecordsByMountainId(mountainId);
 
         List<RecordListResDto> recordListResDtoList = recordList.stream()
-                .map(record -> new RecordListResDto(record, imageRepository, recordLikeRepository))
+                .map(record -> new RecordListResDto(record, imageRepository, recordLikeRepository, recordGoodRepository))
                 .toList();
 
         return ResponseDto.success(recordListResDtoList);
