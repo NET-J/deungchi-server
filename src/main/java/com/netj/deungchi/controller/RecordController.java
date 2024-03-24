@@ -6,6 +6,7 @@ import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.record.RecordUpdateReqDto;
 import com.netj.deungchi.provider.jwt.JwtProvider;
 import com.netj.deungchi.service.GeoUtils;
+import com.netj.deungchi.service.RecordLikeService;
 import com.netj.deungchi.service.RecordService;
 import com.netj.deungchi.service.S3Uploader;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import java.util.List;
 public class RecordController {
 
     private final RecordService recordService;
+    private final RecordLikeService recordLikeService;
     private final S3Uploader s3Uploader;
     private final JwtProvider jwtProvider;
     private final GeoUtils geoUtils;
@@ -87,6 +89,12 @@ public class RecordController {
     @PostMapping("/{recordId}/endLocation")
     public ResponseDto<?> postEndLocation(@PathVariable Long recordId, @RequestParam Long courseDetailId) {
         return recordService.postEndLocation(recordId, courseDetailId);
+    }
+
+    @PostMapping("/{recordId}/like")
+    public ResponseDto<?> postRecordLike(HttpServletRequest request, @PathVariable Long recordId) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return recordLikeService.postRecordLike(memberId, recordId);
     }
 
 
