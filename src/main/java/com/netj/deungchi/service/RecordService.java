@@ -74,8 +74,10 @@ public class RecordService {
         record.setIsShare(recordPostReqDto.getIsShare());
         record.setTemperature(recordPostReqDto.getTemperature());
         record.setWeatherCode(recordPostReqDto.getWeatherCode());
-        record.setHikingDuration(record.getHikingDuration());
-        record.setHikingLength(record.getHikingLength());
+        record.setHikingDuration(recordPostReqDto.getHikingDuration());
+        record.setHikingLength(recordPostReqDto.getHikingLength());
+        log.error(recordPostReqDto.getHikingDuration());
+        log.error(String.valueOf(recordPostReqDto.getHikingLength()));
 
         recordRepository.save(record);
 
