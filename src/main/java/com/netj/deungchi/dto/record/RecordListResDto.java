@@ -6,6 +6,7 @@ import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.image.ImageUrlListResDto;
 import com.netj.deungchi.dto.member.MemberDto;
 import com.netj.deungchi.repository.ImageRepository;
+import com.netj.deungchi.repository.RecordGoodRepository;
 import com.netj.deungchi.repository.RecordLikeRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,10 +26,11 @@ public class RecordListResDto {
     private String level;
     private List<ImageUrlListResDto> imageList;
     private Integer likeCount;
+    private Integer goodCount;
     private Date createdAt;
 
     @Builder
-    public RecordListResDto(Record record, ImageRepository imageRepository, RecordLikeRepository recordLikeRepository){
+    public RecordListResDto(Record record, ImageRepository imageRepository, RecordLikeRepository recordLikeRepository, RecordGoodRepository recordGoodRepository){
         Member member = record.getMember();
         this.member = MemberDto.builder().member(member).build();
 
@@ -38,6 +40,7 @@ public class RecordListResDto {
         this.createdAt = record.getCreatedAt();
 
         this.likeCount = recordLikeRepository.countByRecordId(record.getId());
+        this.goodCount = recordGoodRepository.countByRecordId(record.getId());
 
         List<Image> imageList = imageRepository.findAllByTableNameAndTableId(record.getClass().getSimpleName(), record.getId());
         this.imageList = imageList.stream()

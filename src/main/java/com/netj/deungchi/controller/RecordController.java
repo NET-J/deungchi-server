@@ -5,10 +5,7 @@ import com.netj.deungchi.dto.record.RecordPostReqDto;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.record.RecordUpdateReqDto;
 import com.netj.deungchi.provider.jwt.JwtProvider;
-import com.netj.deungchi.service.GeoUtils;
-import com.netj.deungchi.service.RecordLikeService;
-import com.netj.deungchi.service.RecordService;
-import com.netj.deungchi.service.S3Uploader;
+import com.netj.deungchi.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +22,7 @@ public class RecordController {
 
     private final RecordService recordService;
     private final RecordLikeService recordLikeService;
+    private final RecordGoodService recordGoodService;
     private final S3Uploader s3Uploader;
     private final JwtProvider jwtProvider;
     private final GeoUtils geoUtils;
@@ -95,6 +93,12 @@ public class RecordController {
     public ResponseDto<?> postRecordLike(HttpServletRequest request, @PathVariable Long recordId) throws Exception {
         Long memberId = jwtProvider.getIdFromRequest(request);
         return recordLikeService.postRecordLike(memberId, recordId);
+    }
+
+    @PostMapping("/{recordId}/good")
+    public ResponseDto<?> postRecordGood(HttpServletRequest request, @PathVariable Long recordId) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return recordGoodService.postRecordLike(memberId, recordId);
     }
 
 
