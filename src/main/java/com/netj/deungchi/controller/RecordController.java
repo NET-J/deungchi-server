@@ -44,7 +44,7 @@ public class RecordController {
     }
 
     @PutMapping("/{recordId}/end")
-    public ResponseDto<?> endRecord(@PathVariable Long recordId, @RequestPart RecordPostReqDto recordPostReqDto) {
+    public ResponseDto<?> endRecord(@PathVariable Long recordId, @RequestBody RecordPostReqDto recordPostReqDto) {
 
         return recordService.endRecord(recordId, recordPostReqDto);
     }
