@@ -16,6 +16,7 @@ public class RecordPostResDto {
     private String mountainName;
     private String hikingDuration;
     private Double hikingLength;
+    private Integer temperature;
     private Timestamp createdAt;
 
     public static RecordPostResDto of(Record record) {
@@ -25,6 +26,7 @@ public class RecordPostResDto {
                 .mountainName(mountainName)
                 .hikingDuration(record.getHikingDuration())
                 .hikingLength(record.getHikingLength())
+                .temperature(record.getTemperature())
                 .createdAt(record.getCreatedAt())
                 .build();
     }
