@@ -49,8 +49,8 @@ public class RecordController {
         return recordService.endRecord(recordId, recordPostReqDto);
     }
 
-    @PutMapping("/{recordId}/detail")
-    public ResponseDto<?> updateRecordDetail(@PathVariable Long recordId, @RequestPart RecordUpdateReqDto recordUpdateReqDto)  {
+    @PutMapping("/{recordId}")
+    public ResponseDto<?> updateRecordDetail(@PathVariable Long recordId, @RequestBody RecordUpdateReqDto recordUpdateReqDto)  {
 
         return recordService.updateRecordDetail(recordId, recordUpdateReqDto);
     }
