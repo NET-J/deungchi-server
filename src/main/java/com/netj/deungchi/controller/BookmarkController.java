@@ -22,8 +22,13 @@ public class BookmarkController {
     }
 
     @PostMapping()
-    public ResponseDto<?> postBookmark(@RequestBody BookmarkCreateDto bookmarkCreateDto) {
-        return bookmarkService.postBookmark(bookmarkCreateDto);
+    public ResponseDto<?> postBookmark(HttpServletRequest request, @RequestParam Long mountainId) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+//        bookmarkService.deleteBookmark(memberId, mountainId);
+        System.out.println("mountainId");
+        System.out.println(mountainId);
+
+        return bookmarkService.postBookmark(memberId, mountainId);
     }
 
     @DeleteMapping("/member")
