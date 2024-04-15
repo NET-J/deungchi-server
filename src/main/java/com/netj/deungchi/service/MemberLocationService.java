@@ -26,6 +26,7 @@ public class MemberLocationService {
     public final CourseDetailRepository courseDetailRepository;
     private final EntityManager em;
     private final StampService stampService;
+    private final MountainLandmarkRepository mountainLandmarkRepository;
 
     public ResponseDto<?> postMemberLocation(Long memberId, MemberLocationReqDto memberLocationReqDto) {
         Optional<Member> member = memberRepository.findById(memberId);
@@ -37,9 +38,9 @@ public class MemberLocationService {
         Double totalDistance = calculateMemberTotalDistance(memberId, memberLocationReqDto.getRecordId());
 
         if(isEndLocation(memberLocation.getRecord().getId())){
-            Optional<CourseDetail> courseDetail = courseDetailRepository.findById(record.get().getCourseDetail().getId());
+            Optional<MountainLandmark> mountainLandmark = mountainLandmarkRepository.findById(record.get().getMountainLandmark().getId());
 
-            double distanceByEndLocation = geoUtils.calculateDistance(memberLocation.getLatitude(), memberLocation.getLongitude(), courseDetail.get().getLatitude(), courseDetail.get().getLongitude());
+            double distanceByEndLocation = geoUtils.calculateDistance(memberLocation.getLatitude(), memberLocation.getLongitude(), mountainLandmark.get().getLatitude(), mountainLandmark.get().getLongitude());
             MemberLocation memberLocationUpdate = em.find(MemberLocation.class, memberLocation.getId());
             memberLocationUpdate.setDistance(distanceByEndLocation);
             memberLocationRepository.save(memberLocation);
@@ -57,7 +58,7 @@ public class MemberLocationService {
         Optional<Record> recordOptional = recordRepository.findById(recordId);
         if (recordOptional.isPresent()) {
             Record record = recordOptional.get();
-            return record.getCourseDetail() != null;
+            return record.getMountainLandmark() != null;
         }
         return false; // 레코드가 존재하지 않는 경우
     }

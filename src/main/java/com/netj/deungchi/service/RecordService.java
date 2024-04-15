@@ -32,6 +32,7 @@ public class RecordService {
     private final EntityManager em;
     private final StampService stampService;
     private final StampRepository stampRepository;
+    private final MountainLandmarkRepository mountainLandmarkRepository;
 
     public ResponseDto<?> getRecord(Long recordId) {
 
@@ -167,21 +168,13 @@ public class RecordService {
 
     public ResponseDto<?> getEndLocation(Long recordId) {
         Optional<Record> record = recordRepository.findById(recordId);
-        log.info("recordService.getEndLocation");
+
         if(record.isEmpty()){
             return ResponseDto.fail(404, "Record not found", "등산하는 곳이 설정되지 않습니다.");
         } else {
-            List<Course> courseList = courseRepository.findAllByMountainId(record.get().getMountain().getId());
+            List<MountainLandmark> mountainLandmarkList = mountainLandmarkRepository.findAllByMountainId(record.get().getMountain().getId());
 
-            List<CourseDetail> courseDetailList = new ArrayList<>();
-
-            for (Course course : courseList) {
-                List<CourseDetail> courseDetails = courseDetailRepository.findAllByCourseId(course.getId());
-                courseDetailList.addAll(courseDetails);
-            }
-
-            return ResponseDto.success(courseDetailList);
-
+            return ResponseDto.success(mountainLandmarkList);
         }
     }
 
@@ -200,20 +193,19 @@ public class RecordService {
         }
     }
 
-    public ResponseDto<?> postEndLocation(Long recordId, Long courseDetailId) {
-        Optional<CourseDetail> courseDetail = courseDetailRepository.findById(courseDetailId);
+    public ResponseDto<?> postEndLocation(Long recordId, Long mountainLandmarkId) {
 
-        if(courseDetail.isEmpty()){
-            return ResponseDto.fail(404, "Course not found", "해당 코스가 존재하지 않습니다.");
+        Optional<MountainLandmark> mountainLandmark = mountainLandmarkRepository.findById(mountainLandmarkId);
+
+        if(mountainLandmark.isEmpty()){
+            return ResponseDto.fail(404, "Mountain Landmark not found", "해당 장소가 존재하지 않습니다.");
         } else {
-            Optional<Course> course = courseRepository.findById(courseDetail.get().getCourse().getId());
+            Optional<Mountain> mountain = mountainRepository.findById(mountainLandmark.get().getMountain().getId());
             Record record = em.find(Record.class, recordId);
 
-            record.setCourse(course.get());
-            record.setCourseDetail(courseDetail.get());
-            record.setEndLocation(courseDetail.get().getName());
-
-            log.info(courseDetail.get().getName());
+            record.setMountain(mountain.get());
+            record.setMountainLandmark(mountainLandmark.get());
+            record.setEndLocation(mountainLandmark.get().getName());
 
             recordRepository.save(record);
 

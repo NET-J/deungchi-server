@@ -9,7 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Getter
@@ -40,8 +39,4 @@ public class Course {
 
     @UpdateTimestamp
     Timestamp updatedAt;
-
-    @OneToMany(mappedBy = "course")
-    @JsonIgnore
-    private List<Record> recordList;
 }
