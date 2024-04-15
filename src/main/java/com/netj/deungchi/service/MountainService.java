@@ -56,20 +56,10 @@ public class MountainService {
 
         this.postMountainSearchKeyword(memberId, keyword);
 
-        List<Mountain> mountainsFindByName = mountainRepository.findByNameLike("%" + keyword + "%");
+        String keywordPattern = "%" + keyword + "%";
+        List<Mountain> mountainList = mountainRepository.findByNameOrLocationLike(keywordPattern, keywordPattern);
 
-        List< MountainListResDto > resultByName = mountainsFindByName.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
-
-        List<Mountain> mountainsFindByLocation = mountainRepository.findByLocationLike("%" + keyword + "%");
-
-        Map<String, List<MountainListResDto>> resultByLocation = mountainsFindByLocation.stream()
-                .collect(Collectors.groupingBy(Mountain::getLocation,
-                        Collectors.mapping(mountain -> new MountainListResDto(mountain, bookmarkRepository, memberId),
-                                Collectors.toList())));
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("name", resultByName);
-        result.put("location", resultByLocation);
+        List<MountainListResDto> result = mountainList.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
 
         return ResponseDto.success(result);
     }
