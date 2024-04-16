@@ -5,16 +5,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.sql.Timestamp;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Course {
+public class MountainLandmark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,16 +23,6 @@ public class Course {
     @Column(nullable = false)
     private String name;
 
-    private String level;
-    private String averageTime;
-    private String distance;
-    private String path;
-    private String transportationInfo;
-    private String parkingInfo;
-
-    @CreationTimestamp
-    Timestamp createdAt;
-
-    @UpdateTimestamp
-    Timestamp updatedAt;
+    private Double latitude;
+    private Double longitude;
 }

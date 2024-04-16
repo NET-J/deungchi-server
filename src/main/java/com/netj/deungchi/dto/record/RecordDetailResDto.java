@@ -17,7 +17,6 @@ import java.util.List;
 public class RecordDetailResDto {
 
     private Long id;
-    private Long course_id;
     private String mountainName;
     private String endLocation;
     private String level;

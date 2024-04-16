@@ -28,10 +28,7 @@ public class Record {
     Mountain mountain;
 
     @ManyToOne
-    Course course;
-
-    @ManyToOne
-    CourseDetail courseDetail;
+    MountainLandmark mountainLandmark;
 
     String level;
 
@@ -64,11 +61,10 @@ public class Record {
     Timestamp updatedAt;
 
     @Builder
-    public Record(Member member, Mountain mountain, Course course, CourseDetail courseDetail,String level, String content, Timestamp startAt, Timestamp endAt, String startLocation, String endLocation, String hikingDuration, Double hikingLength, Integer temperature, Integer weatherCode, Boolean isShare) {
+    public Record(Member member, Mountain mountain, MountainLandmark mountainLandmark,String level, String content, Timestamp startAt, Timestamp endAt, String startLocation, String endLocation, String hikingDuration, Double hikingLength, Integer temperature, Integer weatherCode, Boolean isShare) {
         this.member = member;
         this.mountain = mountain;
-        this.course = course;
-        this.courseDetail = courseDetail;
+        this.mountainLandmark = mountainLandmark;
         this.level = level;
         this.content = content;
         this.startAt = startAt;

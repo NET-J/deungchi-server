@@ -29,7 +29,6 @@ public class RecordController {
 
     @GetMapping("/{recordId}/endLocation")
     public ResponseDto<?> getEndLocation(@PathVariable Long recordId) {
-        log.info("getEndLocation");
         return recordService.getEndLocation(recordId);
     }
 
@@ -85,8 +84,8 @@ public class RecordController {
     }
 
     @PostMapping("/{recordId}/endLocation")
-    public ResponseDto<?> postEndLocation(@PathVariable Long recordId, @RequestParam Long courseDetailId) {
-        return recordService.postEndLocation(recordId, courseDetailId);
+    public ResponseDto<?> postEndLocation(@PathVariable Long recordId, @RequestParam Long mountainLandmarkId) {
+        return recordService.postEndLocation(recordId, mountainLandmarkId);
     }
 
     @PostMapping("/{recordId}/like")
