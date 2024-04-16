@@ -18,7 +18,7 @@ public class MountainLandmark {
 
     @JsonIgnore
     @ManyToOne
-    private Course mountain;
+    private Mountain mountain;
 
     @Column(nullable = false)
     private String name;
