@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/mountain")
 @RequiredArgsConstructor
@@ -16,9 +18,9 @@ public class MountainController {
     private final JwtProvider jwtProvider;
 
     @GetMapping("/list")
-    public ResponseDto<?> getMountainList(HttpServletRequest request) throws Exception {
+    public ResponseDto<?> getMountainList(HttpServletRequest request, @RequestParam(required = false) Optional<Boolean>  isMap) throws Exception {
         Long memberId = jwtProvider.getIdFromRequest(request);
-        return mountainService.getMountainList(memberId);
+        return mountainService.getMountainList(memberId, isMap);
     }
 
     @GetMapping("/{mountainId}")

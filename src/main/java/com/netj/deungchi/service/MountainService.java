@@ -5,6 +5,7 @@ import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.course.CourseListResDto;
+import com.netj.deungchi.dto.mountain.MountainCooridateDto;
 import com.netj.deungchi.dto.mountain.MountainListResDto;
 import com.netj.deungchi.dto.record.MountainRecordListResDto;
 import com.netj.deungchi.dto.record.RecordListResDto;
@@ -35,13 +36,19 @@ public class MountainService {
     public final RecordLikeRepository recordLikeRepository;
     public final RecordGoodRepository recordGoodRepository;
 
-    public ResponseDto<?> getMountainList(Long memberId) {
+    public ResponseDto<?> getMountainList(Long memberId, Optional<Boolean> isMap) {
 
         List<Mountain> mountains = mountainRepository.findByIsShow(true);
+
+        if(isMap.orElse(false)){
+            List<MountainCooridateDto> mountainCooridateDtoList = mountains.stream().map(MountainCooridateDto::new).toList();
+            return ResponseDto.success(mountainCooridateDtoList);
+        }
 
         List< MountainListResDto > result = mountains.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
 
         return ResponseDto.success(result);
+
     }
 
     public ResponseDto<?> getRecommendedSearchKeyword() {
