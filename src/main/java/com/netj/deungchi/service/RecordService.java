@@ -77,8 +77,6 @@ public class RecordService {
         record.setWeatherCode(recordPostReqDto.getWeatherCode());
         record.setHikingDuration(recordPostReqDto.getHikingDuration());
         record.setHikingLength(recordPostReqDto.getHikingLength());
-        log.error(recordPostReqDto.getHikingDuration());
-        log.error(String.valueOf(recordPostReqDto.getHikingLength()));
 
         recordRepository.save(record);
 
