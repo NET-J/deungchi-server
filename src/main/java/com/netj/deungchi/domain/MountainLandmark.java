@@ -25,4 +25,6 @@ public class MountainLandmark {
 
     private Double latitude;
     private Double longitude;
+
+    private Boolean isRecommended;
 }
