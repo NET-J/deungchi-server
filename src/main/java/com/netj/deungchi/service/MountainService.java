@@ -107,7 +107,6 @@ public class MountainService {
         List<Course> courseList = CourseRepository.findAllByMountainId(mountain.get().getId());
 
         List<CourseListResDto> courseListResDtoList = courseList.stream()
-                .limit(3)
                 .map(course -> new CourseListResDto(course, imageRepository))
                 .toList();
 
