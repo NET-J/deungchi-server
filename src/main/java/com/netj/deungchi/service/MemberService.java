@@ -6,6 +6,9 @@ import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.member.MemberUpdateDto;
+import com.netj.deungchi.dto.record.MemberRecordResDto;
+import com.netj.deungchi.dto.record.MountainRecordListResDto;
+import com.netj.deungchi.dto.record.RecordListResDto;
 import com.netj.deungchi.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +37,7 @@ public class MemberService {
     public final RecordRepository recordRepository;
     public final BadgeRepository badgeRepository;
     public final StampRepository stampRepository;
+    public final ImageRepository imageRepository;
 
     @Autowired
     private final S3Uploader s3Uploader;
@@ -143,16 +147,20 @@ public class MemberService {
         List<Record> records = recordRepository.getMemberRecord(memberId);
         List<Badge> badges = badgeRepository.getMemberBadge(memberId);
 
+        List<MemberRecordResDto> memberRecordList = records.stream()
+                .map(record -> new MemberRecordResDto(record, imageRepository))
+                .toList();
+
         Map<String, Object> result = new HashMap<>();
         result.put("member", member);
-        result.put("recordCount", records.size());
+        result.put("recordCount", memberRecordList.size());
         result.put("badgeCount", badges.size());
 
-        List<Record> subRecord;
-        if (records.size() > 3) {
-            subRecord = records.subList(0, 2);
+        List<MemberRecordResDto> subRecord;
+        if (memberRecordList.size() > 3) {
+            subRecord = memberRecordList.subList(0, 2);
         } else {
-            subRecord = records;
+            subRecord = memberRecordList;
         }
 
         List<Badge> subBadge;
@@ -199,22 +207,25 @@ public class MemberService {
     public ResponseDto<?> getMemberRecord(Long memberId, String sortBy){
 
         List<Record> records = recordRepository.getMemberRecord(memberId);
+        List<MemberRecordResDto> memberRecordList = records.stream()
+                .map(record -> new MemberRecordResDto(record, imageRepository))
+                .toList();
 
-        Map<String, List<Record>> recordMonthly;
-        if (!records.isEmpty()) {
-            recordMonthly = records.stream().collect(groupingBy(item -> item.getCreatedAt().toString().substring(0, 10)));
+        Map<String, List<MemberRecordResDto>> recordMonthly;
+        if (!memberRecordList.isEmpty()) {
+            recordMonthly = memberRecordList.stream().collect(groupingBy(item -> item.getCreatedAt().toString().substring(0, 10)));
+            List<String> keySet = new ArrayList<>(recordMonthly.keySet());
+            Map<String, List<MemberRecordResDto>> recordMonthlySort = new LinkedHashMap<>();
             if (sortBy.isEmpty() || !sortBy.equals("asc") ) {
-                List<String> keySet = new ArrayList<>(recordMonthly.keySet());
-                Map<String, List<Record>> recordMonthlySort = new LinkedHashMap<>();
-
-                // 키 값으로 오름차순 정렬
-                Collections.reverse(keySet);
-
-                for (String key : keySet) {
-                    recordMonthlySort.put(key, recordMonthly.get(key));
-                }
-                recordMonthly = recordMonthlySort;
+                Collections.sort(keySet, Collections.reverseOrder());
+            } else {
+                Collections.sort(keySet);
             }
+            for (String key : keySet) {
+                System.out.println(key);
+                recordMonthlySort.put(key, recordMonthly.get(key));
+            }
+            recordMonthly = recordMonthlySort;
         } else {
             recordMonthly = new HashMap<>();
         }
