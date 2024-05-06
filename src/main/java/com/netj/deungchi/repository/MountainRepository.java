@@ -9,7 +9,7 @@ import java.util.List;
 public interface MountainRepository extends JpaRepository<Mountain, Long> {
     List<Mountain> findByNameLike(String name);
 
-    List<Mountain> findByNameOrLocationLike(String nameKeyword, String locationKeyword);
+    List<Mountain> findByNameLikeOrLocationLike(String nameKeyword, String locationKeyword);
 
     List<Mountain> findByIsShow(Boolean isShow);
 }
