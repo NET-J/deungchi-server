@@ -64,7 +64,7 @@ public class MountainService {
         this.postMountainSearchKeyword(memberId, keyword);
 
         String keywordPattern = "%" + keyword + "%";
-        List<Mountain> mountainList = mountainRepository.findByNameOrLocationLike(keywordPattern, keywordPattern);
+        List<Mountain> mountainList = mountainRepository.findByNameLikeOrLocationLike(keywordPattern, keywordPattern);
 
         List<MountainListResDto> result = mountainList.stream().map(mountain ->  new MountainListResDto(mountain, bookmarkRepository, memberId)).collect(Collectors.toList());
 
