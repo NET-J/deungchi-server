@@ -75,8 +75,8 @@ public class MountainService {
         Optional<Member> member = memberRepository.findById(memberId);
 
         if(member.isEmpty()) {
-            log.info(String.format("ID[%s] not found\",memberId)"));
-            throw new NotFoundException(String.format("ID[%s] not found\",memberId)"));
+            log.info(String.format("ID[%s] not found", memberId));
+            throw new NotFoundException(String.format("Member ID[%s] not found", memberId));
         }
         MemberSearchKeyword memberSearchKeyword = MemberSearchKeyword.builder()
                 .search_keyword(keyword)
@@ -118,11 +118,18 @@ public class MountainService {
         return ResponseDto.success(result);
     }
 
-    public ResponseDto<?> getRecordList(Long mountainId) {
+    public ResponseDto<?> getRecordList(Long memberId, Long mountainId) {
+        Optional<Member> member = memberRepository.findById(memberId);
+
+        if(member.isEmpty()) {
+            log.info(String.format("ID[%s] not found\",memberId)"));
+            throw new NotFoundException(String.format("ID[%s] not found\",memberId)"));
+        }
+
         List<Record> recordList = recordRepository.findRecordsByMountainId(mountainId);
 
         List<RecordListResDto> recordListResDtoList = recordList.stream()
-                .map(record -> new RecordListResDto(record, imageRepository, recordLikeRepository, recordGoodRepository))
+                .map(record -> new RecordListResDto(member.get(), record, imageRepository, recordLikeRepository, recordGoodRepository))
                 .toList();
 
         return ResponseDto.success(recordListResDtoList);

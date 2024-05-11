@@ -24,20 +24,26 @@ public class RecordListResDto {
     private MemberDto member;
     private String content;
     private String level;
+    private Boolean isLike;
+    private Boolean isGood;
     private List<ImageUrlListResDto> imageList;
     private Integer likeCount;
     private Integer goodCount;
     private Date createdAt;
 
     @Builder
-    public RecordListResDto(Record record, ImageRepository imageRepository, RecordLikeRepository recordLikeRepository, RecordGoodRepository recordGoodRepository){
-        Member member = record.getMember();
-        this.member = MemberDto.builder().member(member).build();
+    public RecordListResDto(Member member, Record record, ImageRepository imageRepository, RecordLikeRepository recordLikeRepository, RecordGoodRepository recordGoodRepository){
+        // 기록 작성자
+        Member author = record.getMember();
+        this.member = MemberDto.builder().member(author).build();
 
         this.id = record.getId();
         this.content = record.getContent();
         this.level = record.getLevel();
         this.createdAt = record.getCreatedAt();
+
+        this.isLike = recordLikeRepository.findByMemberIdAndRecordId(member.getId(), record.getId()).isPresent();
+        this.isGood = recordGoodRepository.findByMemberIdAndRecordId(member.getId(), record.getId()).isPresent();
 
         this.likeCount = recordLikeRepository.countByRecordId(record.getId());
         this.goodCount = recordGoodRepository.countByRecordId(record.getId());
