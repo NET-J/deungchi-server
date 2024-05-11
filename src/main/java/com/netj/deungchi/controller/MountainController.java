@@ -30,8 +30,9 @@ public class MountainController {
     }
 
     @GetMapping("/{mountainId}/recordList")
-    public ResponseDto<?> getRecordList(@PathVariable Long mountainId) {
-        return mountainService.getRecordList(mountainId);
+    public ResponseDto<?> getRecordList(HttpServletRequest request,@PathVariable Long mountainId) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return mountainService.getRecordList(memberId, mountainId);
     }
 
     @GetMapping("/recommendedSearchKeyword")
