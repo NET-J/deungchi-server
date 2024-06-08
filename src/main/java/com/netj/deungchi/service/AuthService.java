@@ -42,6 +42,7 @@ public class AuthService {
         if (!member.isEmpty() && member.get().getDeleted_at() != null) {
             return ResponseDto.fail(400, "error", "leave member");
         }
+        Boolean isCreate = false;
 
         if (member.isEmpty()) {
             // 현재 날짜 구하기
@@ -58,6 +59,7 @@ public class AuthService {
             memberRepository.save(newMember);
 
             member = Optional.of(newMember);
+            isCreate = true;
         }
 
         String accessToken = jwtProvider.getAccessToken(member.get().getId());
@@ -65,6 +67,7 @@ public class AuthService {
         Map<String, Object> result = new HashMap<>();
         result.put("accessToken", accessToken);
         result.put("member", member);
+        result.put("isCreate", isCreate);
 
         return ResponseDto.success(result);
     }
