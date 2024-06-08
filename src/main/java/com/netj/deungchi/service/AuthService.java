@@ -80,10 +80,9 @@ public class AuthService {
         if (!member.isEmpty() && member.get().getDeleted_at() != null) {
             return ResponseDto.fail(400, "error", "leave member");
         }
+        boolean isCreate = false;
 
         if (member.isEmpty()) {
-            // 현재 날짜 구하기
-            Timestamp date = Timestamp.valueOf(LocalDateTime.now());
             Member newMember = Member.builder()
                     .provider("apple")
                     .provider_id(appleLoginDto.getId())
@@ -91,11 +90,11 @@ public class AuthService {
                     .name(appleLoginDto.getName())
                     .nickname(appleLoginDto.getName())
                     .profile_image(appleLoginDto.getProfileImage())
-                    .created_at(date)
                     .build();
             memberRepository.save(newMember);
 
             member = Optional.of(newMember);
+            isCreate = true;
         }
 
         String accessToken = jwtProvider.getAccessToken(member.get().getId());
@@ -103,6 +102,7 @@ public class AuthService {
         Map<String, Object> result = new HashMap<>();
         result.put("accessToken", accessToken);
         result.put("member", member);
+        result.put("isCreate", isCreate);
 
         return ResponseDto.success(result);
     }
