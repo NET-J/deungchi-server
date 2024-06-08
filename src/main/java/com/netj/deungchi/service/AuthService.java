@@ -42,7 +42,7 @@ public class AuthService {
         if (!member.isEmpty() && member.get().getDeleted_at() != null) {
             return ResponseDto.fail(400, "error", "leave member");
         }
-        Boolean isCreate = false;
+        boolean isCreate = false;
 
         if (member.isEmpty()) {
             // 현재 날짜 구하기
