@@ -45,8 +45,6 @@ public class AuthService {
         boolean isCreate = false;
 
         if (member.isEmpty()) {
-            // 현재 날짜 구하기
-            Timestamp date = Timestamp.valueOf(LocalDateTime.now());
 
             Member newMember = Member.builder()
                     .provider("kakao")
