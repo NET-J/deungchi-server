@@ -52,7 +52,6 @@ public class AuthService {
                     .email(kakaoLoginDto.getEmail())
                     .nickname(kakaoLoginDto.getNickname())
                     .profile_image(kakaoLoginDto.getProfileImage())
-                    .created_at(date)
                     .build();
             memberRepository.save(newMember);
 

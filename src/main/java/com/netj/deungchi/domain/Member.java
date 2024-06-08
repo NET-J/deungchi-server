@@ -3,7 +3,9 @@ package com.netj.deungchi.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 
 import java.sql.Timestamp;
@@ -16,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Where(clause = "deleted_at IS NULL")
-@SQLDelete(sql = "UPDATE record SET deleted_at = CURRENT_TIMESTAMP where id = ?")
+@SQLDelete(sql = "UPDATE member SET deleted_at = CURRENT_TIMESTAMP where id = ?")
 public class Member {
 
     @Id
@@ -33,7 +35,9 @@ public class Member {
     Integer is_noti_push;
     String provider;
     String provider_id;
+    @CreationTimestamp
     Timestamp created_at;
+    @UpdateTimestamp
     Timestamp updated_at;
     Timestamp deleted_at;
 
