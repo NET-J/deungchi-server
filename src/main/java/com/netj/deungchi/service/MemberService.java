@@ -74,7 +74,8 @@ public class MemberService {
         if(memberUpdateDto.getIsNotiPush() != null) {
             member.setIs_noti_push(memberUpdateDto.getIsNotiPush());
         }
-
+        Timestamp date = Timestamp.valueOf(LocalDateTime.now());
+        member.setUpdated_at(date);
         return ResponseDto.success(member);
     }
 

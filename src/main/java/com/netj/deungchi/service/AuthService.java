@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,12 +44,16 @@ public class AuthService {
         }
 
         if (member.isEmpty()) {
+            // 현재 날짜 구하기
+            Timestamp date = Timestamp.valueOf(LocalDateTime.now());
+
             Member newMember = Member.builder()
                     .provider("kakao")
                     .provider_id(kakaoLoginDto.getId())
                     .email(kakaoLoginDto.getEmail())
                     .nickname(kakaoLoginDto.getNickname())
                     .profile_image(kakaoLoginDto.getProfileImage())
+                    .created_at(date)
                     .build();
             memberRepository.save(newMember);
 
@@ -76,6 +82,8 @@ public class AuthService {
         }
 
         if (member.isEmpty()) {
+            // 현재 날짜 구하기
+            Timestamp date = Timestamp.valueOf(LocalDateTime.now());
             Member newMember = Member.builder()
                     .provider("apple")
                     .provider_id(appleLoginDto.getId())
@@ -83,6 +91,7 @@ public class AuthService {
                     .name(appleLoginDto.getName())
                     .nickname(appleLoginDto.getName())
                     .profile_image(appleLoginDto.getProfileImage())
+                    .created_at(date)
                     .build();
             memberRepository.save(newMember);
 
