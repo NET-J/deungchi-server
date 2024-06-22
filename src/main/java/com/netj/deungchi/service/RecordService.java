@@ -26,8 +26,6 @@ public class RecordService {
     public final RecordRepository recordRepository;
     private final MemberRepository memberRepository;
     private final MountainRepository mountainRepository;
-    private final CourseRepository courseRepository;
-    private final CourseDetailRepository courseDetailRepository;
     private final ImageRepository imageRepository;
     private final EntityManager em;
     private final StampService stampService;
@@ -211,4 +209,8 @@ public class RecordService {
         }
     }
 
+    public Boolean hasStamp(Long recordId, Long memberId) {
+        Stamp stamp = stampRepository.findByMemberIdAndRecordId(memberId, recordId);
+        return stamp != null;
+    }
 }
