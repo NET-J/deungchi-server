@@ -26,6 +26,7 @@ public class MemberLocationService {
     public final CourseDetailRepository courseDetailRepository;
     private final EntityManager em;
     private final StampService stampService;
+    private final RecordService recordService;
     private final MountainLandmarkRepository mountainLandmarkRepository;
 
     public ResponseDto<?> postMemberLocation(Long memberId, MemberLocationReqDto memberLocationReqDto) {
@@ -37,7 +38,9 @@ public class MemberLocationService {
 
         Double totalDistance = calculateMemberTotalDistance(memberId, memberLocationReqDto.getRecordId());
 
-        if(isEndLocation(memberLocation.getRecord().getId())){
+        Boolean hasStamp = recordService.hasStamp(record.get().getId(), memberId);
+
+        if(isEndLocation(memberLocation.getRecord().getId()) && !hasStamp){
             Optional<MountainLandmark> mountainLandmark = mountainLandmarkRepository.findById(record.get().getMountainLandmark().getId());
 
             double distanceByEndLocation = geoUtils.calculateDistance(memberLocation.getLatitude(), memberLocation.getLongitude(), mountainLandmark.get().getLatitude(), mountainLandmark.get().getLongitude());
@@ -45,9 +48,8 @@ public class MemberLocationService {
             memberLocationUpdate.setDistance(distanceByEndLocation);
             memberLocationRepository.save(memberLocation);
 
-            if(distanceByEndLocation < 50) {
+            if(distanceByEndLocation <= 50) {
                 stampService.postStamp(memberId, record.get().getId());
-                return ResponseDto.fail(201, "End Record", Collections.singletonMap("hikingLength", totalDistance));
             }
         }
 

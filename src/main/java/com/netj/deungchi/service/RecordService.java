@@ -1,5 +1,6 @@
 package com.netj.deungchi.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.netj.deungchi.domain.*;
 import com.netj.deungchi.domain.Record;
 import com.netj.deungchi.dto.image.ImagePostDto;
@@ -14,9 +15,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +28,6 @@ public class RecordService {
     public final RecordRepository recordRepository;
     private final MemberRepository memberRepository;
     private final MountainRepository mountainRepository;
-    private final CourseRepository courseRepository;
-    private final CourseDetailRepository courseDetailRepository;
     private final ImageRepository imageRepository;
     private final EntityManager em;
     private final StampService stampService;
@@ -85,34 +85,47 @@ public class RecordService {
 
     public ResponseDto<?> updateRecordDetail(Long recordId, RecordUpdateReqDto recordUpdateReqDto) {
 
-        Record record = recordRepository.findById(recordId).get();
+        Record record = recordRepository.findById(recordId).orElseThrow(() -> new NotFoundException("기록이 존재하지 않습니다"));
 
+        // 기록 수정
+        updateRecordDetails(record, recordUpdateReqDto);
+        recordRepository.save(record);
+
+        // 이미지 삭제
+        handleImageDeletion(recordUpdateReqDto, recordId, record);
+
+        return ResponseDto.success("수정되었습니다.");
+    }
+
+    private void updateRecordDetails(Record record, RecordUpdateReqDto recordUpdateReqDto) {
         record.setContent(recordUpdateReqDto.getContent());
         record.setLevel(recordUpdateReqDto.getLevel());
         record.setIsShare(recordUpdateReqDto.getIsShare());
-        recordRepository.save(record);
+    }
 
-            if (recordUpdateReqDto.getDeleteImages() != null && !recordUpdateReqDto.getDeleteImages().isEmpty())
-            {
-                List<Long> deleteImgLong = new ArrayList<>();
+    private void handleImageDeletion(RecordUpdateReqDto recordUpdateReqDto, Long recordId, Record record) {
+        if (recordUpdateReqDto.getDeleteImages() != null && !recordUpdateReqDto.getDeleteImages().isEmpty()) {
+            List<Long> deleteImgLong = parseDeleteImages(recordUpdateReqDto.getDeleteImages());
+            imageRepository.deleteAllByIdInBatch(deleteImgLong);
 
-                String[] deleteImgs = recordUpdateReqDto.getDeleteImages().split(",");
-                for (String deleteImg: deleteImgs) {
-                    deleteImgLong.add(Long.parseLong(deleteImg));
-                }
+            updateStampImageIfNecessary(recordId, record);
+        }
+    }
 
-                imageRepository.deleteAllByIdInBatch(deleteImgLong);
+    private List<Long> parseDeleteImages(String deleteImages) {
+        return Arrays.stream(deleteImages.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+    }
 
-                List<Image> imageList = imageRepository.findAllByTableNameAndTableId("Record", recordId);
+    private void updateStampImageIfNecessary(Long recordId, Record record) {
+        List<Image> imageList = imageRepository.findAllByTableNameAndTableId("Record", recordId);
+        Boolean hasStamp = this.hasStamp(recordId, record.getMember().getId());
 
-                if (!imageList.isEmpty()) {
-                    stampService.updateStampImage(record.getMember().getId(),record.getId(), String.valueOf(imageList.get(0).getUrl()));
-                } else {
-                    stampService.updateStampImage(record.getMember().getId(),record.getId(), null);
-                }
-            }
-
-        return ResponseDto.success("수정되었습니다.");
+        if (hasStamp) {
+            String imageUrl = imageList.isEmpty() ? null : imageList.get(0).getUrl();
+            stampService.updateStampImage(record.getMember().getId(), record.getId(), imageUrl);
+        }
     }
 
     public ResponseDto<?> postRecordImages(Long recordId, List<ImagePostDto> imagePostDtoList) {
@@ -211,4 +224,8 @@ public class RecordService {
         }
     }
 
+    public Boolean hasStamp(Long recordId, Long memberId) {
+        Stamp stamp = stampRepository.findByMemberIdAndRecordId(memberId, recordId);
+        return stamp != null;
+    }
 }
