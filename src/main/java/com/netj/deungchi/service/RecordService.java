@@ -150,7 +150,11 @@ public class RecordService {
 
                 imageRepository.save(img);
             }
-            stampService.updateStampImage(record.getMember().getId(), recordId, featuredImageUrl);
+
+            Boolean hasStamp = this.hasStamp(recordId, record.getMember().getId());
+            if(hasStamp) {
+                stampService.updateStampImage(record.getMember().getId(), recordId, featuredImageUrl);
+            }
         }
         return ResponseDto.success(true);
     }
