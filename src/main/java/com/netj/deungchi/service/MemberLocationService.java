@@ -8,6 +8,8 @@ import com.netj.deungchi.repository.*;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -93,6 +95,24 @@ public class MemberLocationService {
 
 //        km로 계산
         return totalDistance/1000;
+    }
+
+    public ResponseDto<?> getMemberLocationList(Long memberId, Long recordId, Optional<Long> memberLocationId) {
+
+        List<MemberLocation> memberLocations;
+
+        if (memberLocationId.isPresent()) {
+            System.out.println("memberLocationId 있음");
+            // memberLocationId가 있는 경우 해당 id 이후로 위치를 리스트로 보냄
+            memberLocations = memberLocationRepository.findByMemberIdAndRecordIdAndIdAfter(memberId, recordId, memberLocationId.get());
+        } else {
+            // memberLocationId가 없는 경우 모든 위치를 리스트 중 100개만 보냄
+            Pageable pageable = PageRequest.of(0, 100);
+            memberLocations = memberLocationRepository.findPageByMemberIdAndRecordIdOrderByIdAsc(memberId, recordId, pageable).getContent();
+        }
+
+        return ResponseDto.success(memberLocations);
+
     }
 
 
