@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/location")
 @RequiredArgsConstructor
@@ -22,6 +24,12 @@ public class MemberLocationController {
     public ResponseDto<?> postMemberLocation(HttpServletRequest request, @RequestBody MemberLocationReqDto memberLocationReqDto) throws Exception {
         Long memberId = jwtProvider.getIdFromRequest(request);
         return memberLocationService.postMemberLocation(memberId, memberLocationReqDto);
+    }
+
+    @GetMapping("/list")
+    public ResponseDto<?> getMemberLocationList(HttpServletRequest request, @RequestParam Long recordId, @RequestParam Optional<Long> memberLocationId) throws Exception {
+        Long memberId = jwtProvider.getIdFromRequest(request);
+        return memberLocationService.getMemberLocationList(memberId, recordId, memberLocationId);
     }
 
 }
