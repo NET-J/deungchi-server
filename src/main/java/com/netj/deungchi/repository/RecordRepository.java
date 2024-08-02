@@ -11,7 +11,8 @@ import java.util.List;
 
 public interface RecordRepository extends JpaRepository<Record, Long> {
 
-    List<Record> findRecordsByMountainId(Long mountainId);
+    @Query(value = "select * from record where mountain_id = :mountainId and is_share = 1", nativeQuery = true)
+    List<Record> findRecordsByMountainId(@Param("mountainId") Long mountainId);
 
     @Query(value = "select r.*, m.name as mountain_name, m.featured_image as mountain_featured_image " +
             "from record as r " +
