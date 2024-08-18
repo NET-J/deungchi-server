@@ -214,7 +214,7 @@ public class MemberService {
 
         Map<String, List<MemberRecordResDto>> recordMonthly;
         if (!memberRecordList.isEmpty()) {
-            recordMonthly = memberRecordList.stream().collect(groupingBy(item -> item.getCreatedAt().toString().substring(0, 10)));
+            recordMonthly = memberRecordList.stream().collect(groupingBy(item -> item.getCreatedAt().toString().substring(0, 7)));
             List<String> keySet = new ArrayList<>(recordMonthly.keySet());
             Map<String, List<MemberRecordResDto>> recordMonthlySort = new LinkedHashMap<>();
             if (sortBy.isEmpty() || !sortBy.equals("asc") ) {
