@@ -1,11 +1,13 @@
 package com.netj.deungchi.service;
 
 import com.netj.deungchi.domain.Member;
+import com.netj.deungchi.domain.MemberTerm;
 import com.netj.deungchi.dto.ResponseDto;
 import com.netj.deungchi.dto.auth.AppleLoginDto;
 import com.netj.deungchi.dto.auth.KakaoLoginDto;
 import com.netj.deungchi.provider.jwt.JwtProvider;
 import com.netj.deungchi.repository.MemberRepository;
+import com.netj.deungchi.repository.MemberTermRepository;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -29,7 +31,7 @@ import java.util.Optional;
 public class AuthService {
     public final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
-
+    public final MemberTermRepository memberTermRepository;
 
     public ResponseDto<?> kakaoLogin(KakaoLoginDto kakaoLoginDto) {
         Date now = new Date();
@@ -61,10 +63,13 @@ public class AuthService {
 
         String accessToken = jwtProvider.getAccessToken(member.get().getId());
 
+        Long memberTermCount = memberTermRepository.countMemberTerm(member.get().getId());
+
         Map<String, Object> result = new HashMap<>();
         result.put("accessToken", accessToken);
         result.put("member", member);
         result.put("isCreate", isCreate);
+        result.put("termCount", memberTermCount);
 
         return ResponseDto.success(result);
     }
@@ -99,10 +104,13 @@ public class AuthService {
 
         String accessToken = jwtProvider.getAccessToken(member.get().getId());
 
+        Long memberTermCount = memberTermRepository.countMemberTerm(member.get().getId());
+
         Map<String, Object> result = new HashMap<>();
         result.put("accessToken", accessToken);
         result.put("member", member);
         result.put("isCreate", isCreate);
+        result.put("termCount", memberTermCount);
 
         return ResponseDto.success(result);
     }
