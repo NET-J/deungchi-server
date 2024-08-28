@@ -31,7 +31,7 @@ public class GeoUtils {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distance = EARTH_RADIUS * c;
 
-        return distance * 1000;
+        return distance;
     }
 
     // 반경 내의 산 추출

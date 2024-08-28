@@ -29,16 +29,18 @@ public class MemberLocation {
     private Double latitude;
     private Double longitude;
     private Double distance;
+    private Double totalDistance;
 
     @CreationTimestamp
     Timestamp createdAt;
 
     @Builder
-    public MemberLocation(Member member, Record record, Double latitude, Double longitude, Double distance) {
+    public MemberLocation(Member member, Record record, Double latitude, Double longitude, Double distance, Double totalDistance) {
         this.member = member;
         this.record = record;
         this.latitude = latitude;
         this.longitude = longitude;
         this.distance = distance;
+        this.totalDistance = totalDistance;
     }
 }
