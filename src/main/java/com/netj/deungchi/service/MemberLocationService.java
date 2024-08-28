@@ -54,7 +54,7 @@ public class MemberLocationService {
             }
         }
 
-        return ResponseDto.success(Collections.singletonMap("hikingLength", String.format("%.17f", totalDistance)));
+        return ResponseDto.success(Collections.singletonMap("hikingLength", totalDistance));
     }
 
     public boolean isEndLocation(Long recordId) {
