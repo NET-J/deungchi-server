@@ -25,7 +25,6 @@ public class MemberLocationService {
     public final MemberRepository memberRepository;
     public final MemberLocationRepository memberLocationRepository;
     public final GeoUtils geoUtils;
-    public final CourseDetailRepository courseDetailRepository;
     private final EntityManager em;
     private final StampService stampService;
     private final RecordService recordService;
@@ -38,7 +37,7 @@ public class MemberLocationService {
         MemberLocation memberLocation = MemberLocation.builder().member(member.get()).record(record.get()).latitude(memberLocationReqDto.getLatitude()).longitude(memberLocationReqDto.getLongitude()).build();
         memberLocationRepository.save(memberLocation);
 
-        Double totalDistance = calculateMemberTotalDistance(memberId, memberLocationReqDto.getRecordId());
+        Double totalDistance = calculateMemberTotalDistance(memberId, memberLocationReqDto.getRecordId(), memberLocation);
 
         Boolean hasStamp = recordService.hasStamp(record.get().getId(), memberId);
 
@@ -50,12 +49,12 @@ public class MemberLocationService {
             memberLocationUpdate.setDistance(distanceByEndLocation);
             memberLocationRepository.save(memberLocation);
 
-            if(distanceByEndLocation <= 50) {
+            if(distanceByEndLocation <= 0.5) {
                 stampService.postStamp(memberId, record.get().getId());
             }
         }
 
-        return ResponseDto.success(Collections.singletonMap("hikingLength", totalDistance));
+        return ResponseDto.success(Collections.singletonMap("hikingLength", String.format("%.17f", totalDistance)));
     }
 
     public boolean isEndLocation(Long recordId) {
@@ -67,7 +66,7 @@ public class MemberLocationService {
         return false; // 레코드가 존재하지 않는 경우
     }
 
-    public Double calculateMemberTotalDistance(Long memberId, Long recordId) {
+    public Double calculateMemberTotalDistance(Long memberId, Long recordId, MemberLocation memberLocation ) {
         List<MemberLocation> memberLocationList = memberLocationRepository.findAllByMemberIdAndRecordIdOrderByIdAsc(memberId, recordId);
         double totalDistance = 0.0; // 총 이동 거리를 저장할 변수 초기화
 
@@ -93,8 +92,11 @@ public class MemberLocationService {
             prevLon = lon;
         }
 
-//        km로 계산
-        return totalDistance/1000;
+        MemberLocation memberLocationUpdate = em.find(MemberLocation.class, memberLocation.getId());
+        memberLocationUpdate.setTotalDistance(totalDistance);
+        memberLocationRepository.save(memberLocation);
+
+        return memberLocation.getTotalDistance();
     }
 
     public ResponseDto<?> getMemberLocationList(Long memberId, Long recordId, Optional<Long> memberLocationId) {
